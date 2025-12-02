@@ -23,7 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'store_app',
-    'carts'
+    'carts',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -41,7 +42,7 @@ ROOT_URLCONF = 'ecommerce.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "store_app/templates"],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -49,8 +50,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'store_app.unit.category_data',
-                'store_app.unit.counter',
+                'store_app.context_processors.category_data',
+                'store_app.context_processors.counter',
             ],
         },
     },

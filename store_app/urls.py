@@ -7,7 +7,6 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('dashboard/', views.dashboard, name="dashboard"),
     path('order-complete/', views.order_complete, name="order_complete"),
-    path('register/', views.register, name="register"),
     path('search/', views.search_result, name="search_result"),
 
 
@@ -19,6 +18,5 @@ urlpatterns = [
 
 
 
-    path('signin/', views.signin, name="signin"),
     path('lab3/', views.lab3, name="lab3"),
 ]

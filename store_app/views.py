@@ -29,10 +29,6 @@ def product_detail(request, product_slug=None, cat_slug=None):
         return redirect()
 
 
-def register(request):
-    return render(request, "register.html")
-
-
 def search_result(request):
     keyword = request.GET.get('keyword', '').strip()
     min_price = request.GET.get('min')
@@ -53,18 +49,18 @@ def search_result(request):
         products = products.filter(
             Q(product_name__icontains=keyword) |
             Q(description__icontains=keyword)
-        )
+        ).first()
 
     if cat_slug:
         categories = get_object_or_404(Category, slug=cat_slug)
-        products = Product.objects.filter(category=categories)
+        products = Product.objects.filter(category=categories).first()
 
     # Үнийн шүүлтүүр
     if min_price:
-        products = products.filter(price__gte=min_price)
+        products = products.filter(price__gte=min_price).first()
 
     if max_price:
-        products = products.filter(price__lte=max_price)
+        products = products.filter(price__lte=max_price).first()
 
     context = {
         "products": products,
@@ -75,10 +71,6 @@ def search_result(request):
         "max_price": max_price
     }
     return render(request, "store.html", context)
-
-
-def signin(request):
-    return render(request, "signin.html")
 
 
 def store(request):

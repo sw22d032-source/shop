@@ -15,8 +15,17 @@ class CartItem(models.Model):
     quantity = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
-    def sub_total(self):
-        return self.product.price * self.quantity
+    # def sub_total(self):
+    #     return self.product.price * self.quantity
 
-    def __str__(self):
-        return str(self.product)
+    # def __str__(self):
+    #     try:
+    #         return str(self.product)
+    #     except Product.DoesNotExist:
+    #         return "Deleted Product"
+
+    # def __str__(self):
+    #     return str(self.product)
+    
+    # def __str__(self):
+    #     return self.product.product_name if self.product_id else "No Product"

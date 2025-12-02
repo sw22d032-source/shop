@@ -4,8 +4,8 @@ from django.urls import path
 from ecommerce import settings
 from django.conf.urls.static import static
 from store_app.views import (
-    index, register, dashboard, order_complete,
-    product_detail, search_result, store, signin
+    index,  dashboard, order_complete,
+    product_detail, search_result, store, 
 )
 from carts.views import (
     cart, add_cart, remove_cart_item, reduce_cart_item
