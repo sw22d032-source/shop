@@ -1,0 +1,155 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<section class="section-content padding-y bg">
+<div class="container">
+
+<div class="row">
+	<main class="col-md-8">
+
+		<!-- Review Cart -->
+		<article class="card mb-4">
+		<div class="card-body">
+			<h4 class="card-title mb-4">Review cart</h4>
+			<div class="row">
+				{% for item in cart_items %}
+				<div class="col-md-6">
+					<figure class="itemside mb-4">
+						<div class="aside">
+							<img src="{{ item.product.images.url }}" class="border img-sm" alt="{{ item.product.product_name }}">
+						</div>
+						<figcaption class="info">
+							<p>{{ item.product.product_name }}</p>
+							<span class="text-muted">{{ item.quantity }}x = ${{ item.sub_total }}</span>
+						</figcaption>
+					</figure>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+		</article>
+
+		<!-- Contact Info -->
+		<article class="card mb-4">
+		<div class="card-body">
+			<h4 class="card-title mb-4">Contact info</h4>
+			<form method="POST" action="{% url 'place_order' %}">
+				{% csrf_token %}
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label>First name</label>
+						<input type="text" name="first_name" class="form-control" required>
+					</div>
+					<div class="form-group col-sm-6">
+						<label>Last name</label>
+						<input type="text" name="last_name" class="form-control" required>
+					</div>
+					<div class="form-group col-sm-6">
+						<label>Phone</label>
+						<input type="text" name="phone" class="form-control" required>
+					</div>
+					<div class="form-group col-sm-6">
+						<label>Email</label>
+						<input type="email" name="email" class="form-control" required>
+					</div>
+				</div>
+		</div>
+		</article>
+
+		<!-- Delivery Info -->
+		<article class="card mb-4">
+		<div class="card-body">
+			<h4 class="card-title mb-4">Delivery info</h4>
+			<div class="row">
+				<div class="form-group col-sm-6">
+					<label>Country*</label>
+					<input type="text" name="country" class="form-control" required>
+				</div>
+				<div class="form-group col-sm-6">
+					<label>State*</label>
+					<input type="text" name="state" class="form-control" required>
+				</div>
+				<div class="form-group col-sm-8">
+					<label>Street*</label>
+					<input type="text" name="street" class="form-control" required>
+				</div>
+				<div class="form-group col-sm-4">
+					<label>Building</label>
+					<input type="text" name="building" class="form-control">
+				</div>
+				<div class="form-group col-sm-4">
+					<label>House</label>
+					<input type="text" name="house" class="form-control">
+				</div>
+				<div class="form-group col-sm-4">
+					<label>Postal code</label>
+					<input type="text" name="postal_code" class="form-control">
+				</div>
+				<div class="form-group col-sm-4">
+					<label>Zip</label>
+					<input type="text" name="zip" class="form-control">
+				</div>
+			</div>
+		</div>
+		</article>
+
+		<!-- Payment Options -->
+		<article class="accordion" id="accordion_pay">
+			<div class="card">
+				<header class="card-header">
+					<label class="form-check collapsed" data-toggle="collapse" data-target="#pay_paypal">
+						<input class="form-check-input" name="payment-method" type="radio" value="PayPal" checked>
+						<h6 class="form-check-label">Paypal</h6>
+					</label>
+				</header>
+				<div id="pay_paypal" class="collapse show" data-parent="#accordion_pay">
+					<div class="card-body">
+						<p class="text-center text-muted">You'll be redirected to PayPal to complete your order.</p>
+					</div>
+				</div>
+			</div>
+			<div class="card">
+				<header class="card-header">
+					<label class="form-check" data-toggle="collapse" data-target="#pay_card">
+						<input class="form-check-input" name="payment-method" type="radio" value="Card">
+						<h6 class="form-check-label">Credit Card</h6>
+					</label>
+				</header>
+				<div id="pay_card" class="collapse" data-parent="#accordion_pay">
+					<div class="card-body">
+						<input type="text" class="form-control mb-2" placeholder="xxxx-xxxx-xxxx-xxxx" name="card_number">
+						<input type="text" class="form-control mb-2" placeholder="MM/YY" name="expiry">
+						<input type="text" class="form-control mb-2" placeholder="CVC" name="cvc">
+					</div>
+				</div>
+			</div>
+		</article>
+
+	</main>
+
+	<!-- Order Summary -->
+	<aside class="col-md-4">
+		<div class="card">
+			<div class="card-body">
+				<dl class="dlist-align">
+				  <dt>Total price:</dt>
+				  <dd class="text-right">${{ total }}</dd>
+				</dl>
+				<dl class="dlist-align">
+				  <dt>Tax:</dt>
+				  <dd class="text-right">${{ tax }}</dd>
+				</dl>
+				<dl class="dlist-align">
+				  <dt>Grand Total:</dt>
+				  <dd class="text-right text-dark b"><strong>${{ grand_total }}</strong></dd>
+				</dl>
+				<hr>
+				<button type="submit" class="btn btn-primary btn-block"> Place Order </button>
+			</div>
+		</div>
+	</aside>
+</div>
+</form>
+
+</div>
+</section>
+
+{% endblock %}

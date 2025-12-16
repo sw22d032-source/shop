@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ single_product.product_name }} | GreatKart{% endblock %}
+
+{% block content %}
+<section class="section-content padding-y bg">
+  <div class="container">
+
+    <div class="card">
+      <div class="row no-gutters">
+        <!-- Product Image -->
+        <aside class="col-md-6">
+          <article class="gallery-wrap"> 
+            <div class="img-big-wrap">
+              {% if product.images %}
+              <a href="#">
+                <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="img-fluid">
+              </a>
+              {% else %}
+              <img src="{% static 'images/no-image.png' %}" alt="No image available" class="img-fluid">
+              {% endif %}
+            </div>
+          </article>
+        </aside>
+
+        <!-- Product Info -->
+        <main class="col-md-6 border-left">
+          <article class="content-body">
+            <h2 class="title">{{ product.product_name }}</h2>
+
+            <div class="mb-3"> 
+              <var class="price h4">${{ product.price|floatformat:2 }}</var> 
+            </div> 
+
+            <p>{{ product.description }}</p>
+            <p><strong>Stock:</strong> {{ product.stock }}</p>
+            <p><strong>Category ID:</strong> {{ product.category_id }}</p>
+
+            <hr>
+
+            <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success mt-2">
+              <span class="text">Add to cart</span> 
+              <i class="fas fa-shopping-cart"></i>  
+            </a>
+          </article>
+        </main>
+      </div>
+    </div>
+
+</section>
+{% endblock content %}

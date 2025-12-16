@@ -1,0 +1,61 @@
+{% extends 'base.html' %} {%load static%} {% block content %}
+<!-- ========================= SECTION PAGETOP ========================= -->
+<section class="section-pagetop bg">
+  <div class="container">
+    <h2 class="title-page">Search Result</h2>
+  </div>
+</section>
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+  <div class="container">
+    <div class="row">
+      <!-- ============ FILTER SIDEBAR ============ -->
+
+      <!-- ============ PRODUCT GRID ============ -->
+      <main class="col-md-9">
+        <header class="border-bottom mb-4 pb-3">
+          <div class="form-inline">
+            <span class="mr-md-auto">{{ total }} items found</span>
+          </div>
+        </header>
+
+        <div class="row">
+          {% for product in products %}
+          <div class="col-md-4">
+            <figure class="card card-product-grid">
+              <div class="img-wrap">
+                <img
+                  src="{{ product.images.url }}"
+                  alt="{{ product.product_name }}"
+                />
+              </div>
+              <figcaption class="info-wrap">
+                <div class="fix-height">
+                  <a href="{{ product.get_url }}" class="title"
+                    >{{ product.product_name }}</a
+                  >
+                  <div class="price-wrap mt-2">
+                    <span class="price">${{ product.price }}</span>
+                    {% if product.old_price %}
+                    <del class="price-old">${{ product.old_price }}</del>
+                    {% endif %}
+                  </div>
+                </div>
+                <a
+                  href="{% url 'add_cart' product.id %}"
+                  class="btn btn-block btn-primary"
+                  >Add to cart</a
+                >
+              </figcaption>
+            </figure>
+          </div>
+          {% empty %}
+          <p>Үр дүн олдсонгүй</p>
+          {% endfor %}
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+{% endblock %}

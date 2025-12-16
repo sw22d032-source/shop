@@ -1,0 +1,213 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<section class="section-pagetop bg">
+  <div class="container">
+    <h2 class="title-page">Our Store</h2>
+  </div>
+</section>
+
+<section class="section-content padding-y">
+  <div class="container">
+    <div class="row">
+      <!-- FILTER -->
+      <aside class="col-md-3">
+        <div class="card">
+          <article class="filter-group">
+            <header class="card-header">
+              <h6 class="title">Categories</h6>
+            </header>
+            <div class="filter-content">
+              {% for cat in categories %}
+              <a
+                class="dropdown-item"
+                href="{% url 'search' %}?category={{ cat.id }}"
+              >
+                {{ cat.category_name }}
+              </a>
+              {% endfor %}
+              <a class="dropdown-item" href="{% url 'store' %}">Бүх бараа</a>
+            </div>
+          </article>
+          <article class="filter-group">
+            <header class="card-header">
+              <a
+                href="#"
+                data-toggle="collapse"
+                data-target="#collapse_4"
+                aria-expanded="true"
+                class=""
+              >
+                <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Sizes</h6>
+              </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_4" style="">
+              <div class="card-body">
+                <label class="checkbox-btn">
+                  <input type="checkbox" />
+                  <span class="btn btn-light"> XS </span>
+                </label>
+
+                <label class="checkbox-btn">
+                  <input type="checkbox" />
+                  <span class="btn btn-light"> SM </span>
+                </label>
+
+                <label class="checkbox-btn">
+                  <input type="checkbox" />
+                  <span class="btn btn-light"> LG </span>
+                </label>
+
+                <label class="checkbox-btn">
+                  <input type="checkbox" />
+                  <span class="btn btn-light"> XXL </span>
+                </label>
+              </div>
+              <!-- card-body.// -->
+            </div>
+          </article>
+          <!-- filter-group .// -->
+
+          <article class="filter-group">
+            <header class="card-header">
+              <a
+                href="#"
+                data-toggle="collapse"
+                data-target="#collapse_3"
+                aria-expanded="true"
+                class=""
+              >
+                <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Price range</h6>
+              </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_3" style="">
+              <div class="card-body">
+                <form method="get" action="{% url 'search' %}">
+                  <input
+                    type="hidden"
+                    name="category"
+                    value="{{ category_id }}"
+                  />
+                  <input type="hidden" name="keyword" value="{{ keyword }}" />
+
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Min price</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        name="min_price"
+                        value="{{ min_price }}"
+                      />
+                    </div>
+
+                    <div class="form-group col-md-6 text-right">
+                      <label>Max price</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        name="max_price"
+                        value="{{ max_price }}"
+                      />
+                    </div>
+                  </div>
+
+                  <button class="btn btn-block btn-primary" type="submit">
+                    Apply
+                  </button>
+                </form>
+              </div>
+              <!-- card-body.// -->
+            </div>
+          </article>
+        </div>
+      </aside>
+      
+
+      <!-- PRODUCTS -->
+      <main class="col-md-9">
+        <header class="border-bottom mb-4 pb-3">
+          <p>Нийт <b>{{ total }}</b> бараа</p>
+        </header>
+
+        <div class="row">
+          {% for product in products %}
+          <div class="col-md-4">
+            <figure class="card card-product-grid">
+              <div class="img-wrap">
+                <a href="{{ product.get_url }}">
+                  <img src="/media/{{ product.images }}" class="img-fluid" />
+                </a>
+              </div>
+
+              <figcaption class="info-wrap">
+                <div class="fix-height">
+                  <a href="{{ product.get_url }}" class="title">
+                    {{ product.product_name }}
+                  </a>
+                {% if product.average_rating %}
+    <div class="d-flex align-items-center">
+
+        <div class="rating">
+            {% for i in "12345" %}
+                {% with current=forloop.counter0 next=forloop.counter %}
+
+                    {# 1. БҮТЭН ОД #}
+                    {% if product.average_rating >= next %}
+                        <i class="fa-solid fa-star text-warning"></i>
+
+                    {# 2. ХАГАС ОД #}
+                    {% elif product.average_rating > current and product.average_rating < next %}
+                        <i class="fa-solid fa-star-half-stroke text-warning"></i>
+
+                    {# 3. ХООСОН ОД #}
+                    {% else %}
+                        <i class="fa-regular fa-star text-warning"></i>
+                    {% endif %}
+
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        {# ✅ ОДНЫ АРД ДУНДАЖ ГАРНА #}
+        <span class="text-muted ms-2">
+            {{ product.average_rating|floatformat:1 }}
+        </span>
+
+    </div>
+{% else %}
+    <span class="text-muted">No rating yet</span>
+{% endif %}
+
+
+                  <p class="text-muted">
+                    {{ product.description|truncatewords:8 }}
+                  </p>
+
+                  <div class="price-wrap mt-2">
+                    <span class="price">${{ product.price }}</span>
+                  </div>
+                </div>
+
+                <a
+                  href="{% url 'add_cart' product.id %}"
+                  class="btn btn-block btn-primary"
+                >
+                  Add to cart
+                </a>
+              </figcaption>
+            </figure>
+          </div>
+          {% empty %}
+          <div class="col-12">
+            <p>Бараа олдсонгүй</p>
+          </div>
+          {% endfor %}
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

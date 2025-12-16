@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<head>
+ <meta charset='utf-8'>
+ <title>Бараа нэмэх</title>
+</head>
+<body>
+ <form method="POST">
+ {{ itemForm.as_p }}
+ {% csrf_token %}
+ <input type="submit" value="Нэмэх">
+ </form>
+</body>
+
+{% endblock %}
