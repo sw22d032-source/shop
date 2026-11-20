@@ -219,3 +219,16 @@ QPAY_CALLBACK_BASE = os.environ.get('QPAY_CALLBACK_BASE', '')
 # Хоосон бол DEBUG-ийг дагана. Vercel дээр найздаа үзүүлэх бол QPAY_TEST_BUTTON=1 гэж тохируулна.
 QPAY_TEST_BUTTON = {'1': True, 'true': True, '0': False, 'false': False}.get(
     os.environ.get('QPAY_TEST_BUTTON', '').lower())
+
+# ---------------------------------------------------------------------------
+# Алдааг Vercel → Logs хэсэгт хэвлэх (DEBUG=False үед Django анхдагчаар хэвлэдэггүй)
+# ---------------------------------------------------------------------------
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {'console': {'class': 'logging.StreamHandler'}},
+    'loggers': {
+        'django': {'handlers': ['console'], 'level': 'WARNING'},
+        'django.request': {'handlers': ['console'], 'level': 'ERROR', 'propagate': False},
+    },
+}
