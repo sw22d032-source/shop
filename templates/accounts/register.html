@@ -1,80 +1,61 @@
 {% extends "base.html" %}
-{% load static %}
 
-{% block title %}GreatKart | Register{% endblock %}
+{% block title %}Бүртгүүлэх — BlueCart{% endblock %}
 
-{% block extra_head %}
-<link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
-
-<!-- jQuery -->
-<script src="{% static 'js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
-
-<!-- Bootstrap4 files -->
-<script src="{% static 'js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
-<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
-
-<!-- Font Awesome -->
-<link href="{% static 'fonts/fontawesome/css/all.min.css' %}" rel="stylesheet" type="text/css"/>
-
-<!-- Custom styles -->
-<link href="{% static 'css/ui.css' %}" rel="stylesheet" type="text/css"/>
-<link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
-
-<!-- Custom script -->
-<script src="{% static 'js/script.js' %}" type="text/javascript"></script>
-{% endblock extra_head %}
+{% block messages %}{% endblock %}
 
 {% block content %}
+<section class="auth-page">
+	<div class="auth-box" style="max-width:520px">
+		<h3 class="auth-title">Бүртгүүлэх</h3>
 
-<section class="section-content padding-y">
+		{% for message in messages %}
+		<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+		{% endfor %}
+		{% for e in user_form.non_field_errors %}<div class="auth-error mb-3">{{ e }}</div>{% endfor %}
 
-<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
-  <article class="card-body">
-    <header class="mb-4"><h4 class="card-title">Sign up</h4></header>
+		<form method="post" enctype="multipart/form-data" class="auth-form">
+			{% csrf_token %}
+			<div class="form-row">
+				<div class="col-6">
+					<label class="auth-label">Нэр</label>
+					<input type="text" name="first_name" value="{{ user_form.first_name.value|default:'' }}" class="auth-input" placeholder="Нэр">
+				</div>
+				<div class="col-6">
+					<label class="auth-label">Овог</label>
+					<input type="text" name="last_name" value="{{ user_form.last_name.value|default:'' }}" class="auth-input" placeholder="Овог">
+				</div>
+			</div>
 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
+			<label class="auth-label">И-мэйл хаяг*</label>
+			<input type="email" name="email" value="{{ user_form.email.value|default:'' }}" class="auth-input{% if user_form.email.errors %} is-invalid{% endif %}" placeholder="name@example.com" required>
+			{% for e in user_form.email.errors %}<div class="auth-error">{{ e }}</div>{% endfor %}
 
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
+			<label class="auth-label">Утасны дугаар*</label>
+			<input type="tel" name="phone_number" value="{{ account_form.phone_number.value|default:'' }}" class="auth-input{% if account_form.phone_number.errors %} is-invalid{% endif %}" placeholder="99112233" required>
+			{% for e in account_form.phone_number.errors %}<div class="auth-error">{{ e }}</div>{% endfor %}
 
-      <!-- Render User Form Fields -->
-      {% for field in user_form %}
-        <div class="form-group">
-          {{ field.label_tag }}
-          {{ field }}
-          {% if field.help_text %}
-            <small class="form-text text-muted">{{ field.help_text }}</small>
-          {% endif %}
-          {% for error in field.errors %}
-            <div class="text-danger">{{ error }}</div>
-          {% endfor %}
-        </div>
-      {% endfor %}
+			<div class="form-row">
+				<div class="col-6">
+					<label class="auth-label">Нууц үг*</label>
+					<input type="password" name="password" class="auth-input{% if user_form.password.errors %} is-invalid{% endif %}" placeholder="Нууц үг" required>
+				</div>
+				<div class="col-6">
+					<label class="auth-label">Нууц үг давтах*</label>
+					<input type="password" name="repeat_password" class="auth-input" placeholder="Дахин оруулах" required>
+				</div>
+			</div>
+			{% for e in user_form.password.errors %}<div class="auth-error">{{ e }}</div>{% endfor %}
 
-      <!-- Render Account Form Fields -->
-      {% for field in account_form %}
-        <div class="form-group">
-          {{ field.label_tag }}
-          {{ field }}
-          {% for error in field.errors %}
-            <div class="text-danger">{{ error }}</div>
-          {% endfor %}
-        </div>
-      {% endfor %}
+			<label class="auth-label">Профайл зураг <small class="text-muted">(заавал биш)</small></label>
+			<input type="file" name="pro_image" accept="image/*" class="form-control-file mb-2">
 
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary btn-block"> Register </button>
-      </div>
-    </form>
-  </article>
-</div>
+			<button type="submit" class="auth-btn">Бүртгүүлэх <i class="fa fa-arrow-right ml-2"></i></button>
+		</form>
 
-<p class="text-center mt-4">Have an account? <a href="{% url 'accounts:signin' %}">Log In</a></p>
+		<p class="auth-switch">Бүртгэлтэй юу? <a href="{% url 'accounts:signin' %}">Нэвтрэх</a></p>
 
+		{% include 'accounts/_social.html' %}
+	</div>
 </section>
-
-{% endblock content %}
+{% endblock %}

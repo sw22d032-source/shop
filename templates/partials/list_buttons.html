@@ -1,0 +1,15 @@
+{# Хадгалах / Харьцуулах товч. Ашиглах: {% include 'partials/list_buttons.html' with p=product mode='detail' %} #}
+<form method="post" action="{% url 'wishlist_toggle' p.id %}" class="js-toggle d-inline" data-kind="wishlist" data-product="{{ p.id }}">
+	{% csrf_token %}
+	<input type="hidden" name="next" value="{{ request.get_full_path }}">
+	<button type="submit" class="tool-btn {% if p.id in wishlist_ids %}active{% endif %}" title="Хадгалах" aria-label="Хадгалах">
+		<i class="{% if p.id in wishlist_ids %}fas{% else %}far{% endif %} fa-heart"></i>{% if mode == 'detail' %}<span> Хадгалах</span>{% endif %}
+	</button>
+</form>
+<form method="post" action="{% url 'compare_toggle' p.id %}" class="js-toggle d-inline" data-kind="compare" data-product="{{ p.id }}">
+	{% csrf_token %}
+	<input type="hidden" name="next" value="{{ request.get_full_path }}">
+	<button type="submit" class="tool-btn {% if p.id in compare_ids %}active{% endif %}" title="Харьцуулах" aria-label="Харьцуулах">
+		<i class="fa fa-exchange-alt"></i>{% if mode == 'detail' %}<span> Харьцуулах</span>{% endif %}
+	</button>
+</form>

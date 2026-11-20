@@ -1,0 +1,47 @@
+{% extends "accounts/_profile_base.html" %}
+{% block pf_content %}
+<div class="pf-card pf-form-card">
+	<div class="pf-form-head">
+		<h5>Хувийн мэдээлэл</h5>
+		{% if account.updated_at %}<small>Сүүлд өөрчилсөн: {{ account.updated_at|date:"Y.m.d" }}</small>{% endif %}
+	</div>
+	<form method="post" class="pf-form" novalidate>
+		{% csrf_token %}
+		<div class="pf-grid">
+			<div>
+				<label>Одоогийн Овог</label>
+				<input type="text" class="auth-input" value="{{ user.last_name }}" placeholder="—" disabled>
+			</div>
+			<div>
+				<label>Одоогийн Нэр</label>
+				<input type="text" class="auth-input" value="{{ user.first_name }}" placeholder="—" disabled>
+			</div>
+			<div>
+				<label><span class="req">*</span> Овог солих</label>
+				<input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" class="auth-input{% if form.last_name.errors %} is-invalid{% endif %}" placeholder="Овог">
+				{% for e in form.last_name.errors %}<div class="auth-error">{{ e }}</div>{% endfor %}
+			</div>
+			<div>
+				<label><span class="req">*</span> Нэр солих</label>
+				<input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}" class="auth-input{% if form.first_name.errors %} is-invalid{% endif %}" placeholder="Нэр">
+				{% for e in form.first_name.errors %}<div class="auth-error">{{ e }}</div>{% endfor %}
+			</div>
+			<div>
+				<label>Төрсөн өдөр</label>
+				<input type="date" name="birth_date" value="{{ form.birth_date.value|date:'Y-m-d'|default:form.birth_date.value|default:'' }}" class="auth-input{% if form.birth_date.errors %} is-invalid{% endif %}">
+				{% for e in form.birth_date.errors %}<div class="auth-error">{{ e }}</div>{% endfor %}
+			</div>
+			<div>
+				<label>Хүйс</label>
+				<select name="gender" class="auth-input">
+					{% for value, label in form.fields.gender.choices %}
+					<option value="{{ value }}" {% if form.gender.value == value %}selected{% endif %}>{{ label }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div><a href="{% url 'accounts:profile' %}" class="pf-btn-back">Буцах</a></div>
+			<div><button type="submit" class="auth-btn mt-0">Мэдээлэл шинэчлэх <i class="fa fa-arrow-right ml-2"></i></button></div>
+		</div>
+	</form>
+</div>
+{% endblock %}

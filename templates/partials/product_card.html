@@ -1,0 +1,27 @@
+{% load humanize %}
+<div class="p-card">
+	<div class="p-badges">
+		{% with off=p.discount_percent %}{% if off %}<span class="p-badge sale">-{{ off }}%</span>{% endif %}{% endwith %}
+		{% if p.stock <= 0 %}
+		<span class="p-badge out">Дууссан</span>
+		{% elif p.stock <= 5 %}
+		<span class="p-badge">Цөөн үлдсэн</span>
+		{% endif %}
+	</div>
+	<div class="p-tools">{% include 'partials/list_buttons.html' with mode='card' %}</div>
+	<a href="{{ p.get_url }}" class="p-img">
+		{% if p.images %}<img src="{{ p.images.url }}" alt="{{ p.product_name }}" loading="lazy">{% endif %}
+	</a>
+	<div class="p-body">
+		<div class="p-cat">{% if p.brand %}<b>{{ p.brand }}</b> · {% endif %}{{ p.category.category_name }}</div>
+		<a href="{{ p.get_url }}" class="p-name">{{ p.product_name }}</a>
+		<div class="p-price">{{ p.price|intcomma }}₮{% if p.old_price and p.old_price > p.price %}<span class="p-old">{{ p.old_price|intcomma }}₮</span>{% endif %}</div>
+		<div class="p-actions">
+			{% if p.stock <= 0 %}
+			<span class="btn-cart disabled">Үлдэгдэлгүй</span>
+			{% else %}
+			<a href="{% url 'add_cart' p.id %}" class="btn-cart"><i class="fa fa-shopping-cart mr-1"></i> Сагслах</a>
+			{% endif %}
+		</div>
+	</div>
+</div>

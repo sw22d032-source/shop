@@ -1,0 +1,21 @@
+{# Ангиллын мод (рекурсив). Ашиглах: {% include 'partials/cat_tree.html' with nodes=categories level=0 %} #}
+<ul class="cat-tree{% if level %} cat-tree-sub{% endif %}">
+	{% for c in nodes %}
+	<li class="cat-node{% if c.id in open_ids %} open{% endif %}{% if garchig and garchig.id == c.id %} current{% endif %}">
+		<div class="cat-row">
+			{% if c.subs %}
+			<button type="button" class="cat-toggle" aria-label="Задлах" aria-expanded="{% if c.id in open_ids %}true{% else %}false{% endif %}">
+				<i class="fa fa-plus"></i><i class="fa fa-minus"></i>
+			</button>
+			{% else %}
+			<span class="cat-dot"></span>
+			{% endif %}
+			<a href="{{ c.get_url }}" class="cat-link">{{ c.category_name }}</a>
+			<span class="cat-count">{{ c.total }}</span>
+		</div>
+		{% if c.subs %}
+		{% include 'partials/cat_tree.html' with nodes=c.subs level=1 %}
+		{% endif %}
+	</li>
+	{% endfor %}
+</ul>

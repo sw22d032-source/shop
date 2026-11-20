@@ -1,107 +1,94 @@
 {% extends 'base.html' %}
-{%load static%}
+{% load humanize %}
+{% load static %}
 {% block content %}
 
-
-<!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-conten padding-y bg">
-
 	<div class="container">
 		<div class="row">
 			<aside class="col-md-3">
-				<!--   SIDEBAR   -->
 				<ul class="list-group">
-					<a class="list-group-item active" href="#"> My order history </a>
-					<a class="list-group-item" href="#"> Transactions </a>
-					<a class="list-group-item" href="#"> Return and refunds </a>
-					<a class="list-group-item" href="#">Settings </a>
-					<a class="list-group-item" href="#"> My Selling Items </a>
-					<a class="list-group-item" href="#"> Received orders </a>
+					<a class="list-group-item" href="{% url 'accounts:profile' %}"> Хувийн мэдээлэл </a>
+					<a class="list-group-item active" href="{% url 'dashboard' %}"> Миний захиалга </a>
+					<a class="list-group-item" href="{% url 'wishlist' %}"> Хадгалсан бараа </a>
+					<a class="list-group-item" href="{% url 'compare' %}"> Харьцуулах </a>
+					<a class="list-group-item" href="{% url 'cart' %}"> My cart </a>
 				</ul>
 				<br>
-				<a class="btn btn-light btn-block" href="#"> <i class="fa fa-power-off"></i> <span class="text">Log
-						out</span> </a>
-				<!--   SIDEBAR .//END   -->
+				<a class="btn btn-light btn-block" href="{% url 'accounts:signout' %}">
+					<i class="fa fa-power-off"></i> <span class="text">Log out</span>
+				</a>
 			</aside>
+
 			<main class="col-md-9">
-				<article class="card">
+				{% for order in orders %}
+				<article class="card mb-4">
 					<header class="card-header">
-						<strong class="d-inline-block mr-3">Order ID: 6123456789</strong>
-						<span>Order Date: 16 December 2018</span>
+						<strong class="d-inline-block mr-3">Order #{{ order.order_number }}</strong>
+						<span>{{ order.created_at|date:"Y-m-d H:i" }}</span>
+						<span class="float-right">
+							<span class="badge pay-badge {{ order.payment_status }}">{{ order.get_payment_status_display }}</span>
+							<span class="badge badge-info">{{ order.get_status_display }}</span>
+						</span>
 					</header>
 					<div class="card-body">
 						<div class="row">
 							<div class="col-md-8">
 								<h6 class="text-muted">Delivery to</h6>
-								<p>Michael Jackson <br>
-									Phone +1234567890 Email: myname@pixsellz.com <br>
-									Location: Home number, Building name, Street 123, Tashkent, UZB <br>
-									P.O. Box: 100123
+								<p>{{ order.full_name }} <br>
+									Phone: {{ order.phone }} · Email: {{ order.email }} <br>
+									{{ order.city }}, {{ order.address }}
 								</p>
 							</div>
 							<div class="col-md-4">
 								<h6 class="text-muted">Payment</h6>
-								<span class="text-success">
-									<i class="fab fa-lg fa-cc-visa"></i>
-									Visa **** 4216
-								</span>
-								<p>Subtotal: $356 <br>
-									Shipping fee: $56 <br>
-									<span class="b">Total: $456 </span>
+								<p>Subtotal: {{ order.order_total|intcomma }}₮ <br>
+									Tax: {{ order.tax|intcomma }}₮ <br>
+									<span class="b">Total: {{ order.grand_total|intcomma }}₮</span>
 								</p>
 							</div>
-						</div> <!-- row.// -->
-					</div> <!-- card-body .// -->
+						</div>
+					</div>
 					<div class="table-responsive">
-						<table class="table table-hover">
+						<table class="table table-hover mb-0">
+							{% for item in order.items.all %}
 							<tr>
 								<td width="65">
-									<img src="{%static 'images/items/1.jpg'%}" class="img-xs border">
+									{% if item.product and item.product.images %}
+									<img src="{{ item.product.images.url }}" class="img-xs border">
+									{% endif %}
 								</td>
 								<td>
-									<p class="title mb-0">Product name goes here </p>
-									<var class="price text-muted">USD 145</var>
+									<p class="title mb-0">{{ item.product_name }}</p>
+									<var class="price text-muted">{{ item.quantity }} x {{ item.price|intcomma }}₮</var>
 								</td>
-								<td> Seller <br> Nike clothing </td>
-								<td width="250"> <a href="#" class="btn btn-outline-primary">Track order</a> <a href="#"
-										class="btn btn-light"> Details </a> </td>
+								<td class="text-right">{{ item.sub_total|intcomma }}₮</td>
 							</tr>
-							<tr>
-								<td>
-									<img src="{%static 'images/items/2.jpg'%}" class="img-xs border">
-								</td>
-								<td>
-									<p class="title mb-0">Another name goes here </p>
-									<var class="price text-muted">USD 15</var>
-								</td>
-								<td> Seller <br> ABC shop </td>
-								<td> <a href="#" class="btn btn-outline-primary">Track order</a> <a href="#"
-										class="btn btn-light"> Details </a> </td>
-							</tr>
-							<tr>
-								<td>
-									<img src="{%static 'images/items/3.jpg'%}" class="img-xs border">
-								</td>
-								<td>
-									<p class="title mb-0">The name of the product goes here </p>
-									<var class="price text-muted">USD 145</var>
-								</td>
-								<td> Seller <br> Wallmart </td>
-								<td> <a href="#" class="btn btn-outline-primary">Track order</a> <a href="#"
-										class="btn btn-light"> Details </a> </td>
-							</tr>
+							{% endfor %}
 						</table>
-					</div> <!-- table-responsive .end// -->
-				</article> <!-- order-group.// -->
+					</div>
+					<div class="card-footer text-right">
+						{% if order.payment_status == 'pending' %}
+						<form method="post" action="{% url 'qpay_cancel' order.order_number %}" class="d-inline" onsubmit="return confirm('Захиалгыг цуцлах уу?');">
+							{% csrf_token %}<button type="submit" class="btn btn-light btn-sm text-danger">Цуцлах</button>
+						</form>
+						<a href="{% url 'qpay_pay' order.order_number %}" class="btn btn-primary btn-sm"><i class="fa fa-qrcode mr-1"></i> QPay-ээр төлөх</a>
+						{% elif order.payment_status == 'paid' %}
+						<a href="{% url 'order_complete' order.order_number %}" class="btn btn-light btn-sm">Дэлгэрэнгүй</a>
+						{% endif %}
+					</div>
+				</article>
+				{% empty %}
+				<div class="card">
+					<div class="card-body text-center p-5">
+						<h5>Танд одоогоор захиалга алга байна.</h5>
+						<a href="{% url 'store' %}" class="btn btn-primary mt-3">Дэлгүүр хэсэх</a>
+					</div>
+				</div>
+				{% endfor %}
 			</main>
-		</div> <!-- row.// -->
+		</div>
 	</div>
-
-
 </section>
-<!-- ========================= SECTION CONTENT END// ========================= -->
-
-
-
 
 {% endblock %}

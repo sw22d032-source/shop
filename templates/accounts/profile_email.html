@@ -1,0 +1,45 @@
+{% extends "accounts/_profile_base.html" %}
+{% block pf_content %}
+<div class="pf-card pf-form-card">
+	<div class="pf-form-head">
+		<h5>И-мэйл баталгаажуулах</h5>
+		<small>{{ user.email }} хаяг руу 6 оронтой код илгээж баталгаажуулна.</small>
+	</div>
+	<div class="pf-form">
+		{% if console_mode %}
+		<div class="pf-hint mt-0 mb-3">
+			<i class="fa fa-info-circle"></i>
+			Хөгжүүлэлтийн горим: имэйл тохиргоо хийгдээгүй тул код имэйлээр очихгүй.
+			{% if dev_code %}Таны код: <b class="dev-code">{{ dev_code }}</b>{% else %}Код илгээхэд энд болон PowerShell цонхонд харагдана.{% endif %}
+		</div>
+		{% endif %}
+		{% if error %}<div class="auth-error mb-3">{{ error }}</div>{% endif %}
+
+		{% if code_sent %}
+		<form method="post" class="pf-grid one">
+			{% csrf_token %}
+			<input type="hidden" name="action" value="verify">
+			<div>
+				<label><span class="req">*</span> Баталгаажуулах код</label>
+				<input type="text" name="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"
+					class="auth-input code-input" placeholder="••••••" required autofocus>
+			</div>
+			<div><button type="submit" class="auth-btn mt-0">Баталгаажуулах <i class="fa fa-arrow-right ml-2"></i></button></div>
+		</form>
+		<form method="post" class="mt-3">
+			{% csrf_token %}<input type="hidden" name="action" value="send">
+			<span class="text-muted small">Код ирээгүй юу?</span>
+			<button type="submit" class="btn btn-link btn-sm p-0 ml-1">Дахин илгээх</button>
+		</form>
+		{% else %}
+		<form method="post">
+			{% csrf_token %}<input type="hidden" name="action" value="send">
+			<div class="pf-grid">
+				<div><a href="{% url 'accounts:profile' %}" class="pf-btn-back">Буцах</a></div>
+				<div><button type="submit" class="auth-btn mt-0">Код илгээх <i class="fa fa-paper-plane ml-2"></i></button></div>
+			</div>
+		</form>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+venv/
+.venv/
+db.sqlite3
+*.rar
+static/ecom-template/
+loginDavaa/
+zuragAndReviewSarnai/
+query.py

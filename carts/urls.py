@@ -1,19 +1,17 @@
-
-from django.contrib import admin
 from django.urls import path
-from ecommerce import settings
-from django.conf.urls.static import static
-from store_app.views import (
-    index,  dashboard, order_complete,
-    product_detail, search_result, store, 
-)
-from carts.views import (
-    cart, add_cart, remove_cart_item, reduce_cart_item
-)
+
+from . import views
 
 urlpatterns = [
-    path('', cart, name='cart'),
-    path('add/<int:product_id>/', add_cart, name='add_cart'),
-    path('remove/<int:product_id>/', remove_cart_item, name='remove_cart_item'),
-    path('reduce/<int:product_id>/', reduce_cart_item, name='reduce_cart_item'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', views.cart, name='cart'),
+    path('add/<int:product_id>/', views.add_cart, name='add_cart'),
+    path('remove/<int:product_id>/', views.remove_cart_item, name='remove_cart_item'),
+    path('reduce/<int:product_id>/', views.reduce_cart_item, name='reduce_cart_item'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('order-complete/<str:order_number>/', views.order_complete, name='order_complete'),
+    path('pay/<str:order_number>/', views.qpay_pay, name='qpay_pay'),
+    path('pay/<str:order_number>/check/', views.qpay_check, name='qpay_check'),
+    path('pay/<str:order_number>/cancel/', views.qpay_cancel, name='qpay_cancel'),
+    path('pay/<str:order_number>/simulate/', views.qpay_simulate, name='qpay_simulate'),
+    path('qpay/callback/<str:order_number>/', views.qpay_callback, name='qpay_callback'),
+]

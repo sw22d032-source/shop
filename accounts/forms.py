@@ -58,3 +58,49 @@ class AccountsForm(ModelForm):
         if Account.objects.filter(phone_number=phone_number).exists():
             raise forms.ValidationError("Энэ утасны дугаар бүртгэлтэй байна.")
         return phone_number
+
+
+# ---------------------------------------------------------------------------
+# Профайл
+# ---------------------------------------------------------------------------
+
+class ProfileInfoForm(forms.Form):
+    last_name = forms.CharField(max_length=150, label='Овог солих')
+    first_name = forms.CharField(max_length=150, label='Нэр солих')
+    birth_date = forms.DateField(required=False, label='Төрсөн өдөр',
+                                 widget=forms.DateInput(attrs={'type': 'date'}))
+    gender = forms.ChoiceField(required=False, label='Хүйс',
+                               choices=[('', 'Сонгох')] + list(Account.GENDER_CHOICES))
+
+    def clean_birth_date(self):
+        import datetime
+        d = self.cleaned_data.get('birth_date')
+        if d and (d > datetime.date.today() or d.year < 1900):
+            raise forms.ValidationError('Төрсөн өдөр буруу байна.')
+        return d
+
+
+class PhoneForm(forms.Form):
+    phone_number = forms.CharField(max_length=20, label='Утасны дугаар')
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_phone_number(self):
+        phone = ''.join(ch for ch in self.cleaned_data['phone_number'] if ch.isdigit())
+        if len(phone) != 8:
+            raise forms.ValidationError('8 оронтой утасны дугаар оруулна уу.')
+        if Account.objects.filter(phone_number=phone).exclude(user=self.user).exists():
+            raise forms.ValidationError('Энэ дугаар өөр бүртгэлд ашиглагдаж байна.')
+        return phone
+
+
+class AvatarForm(forms.Form):
+    pro_image = forms.ImageField(label='Зураг')
+
+    def clean_pro_image(self):
+        img = self.cleaned_data['pro_image']
+        if img.size > 5 * 1024 * 1024:
+            raise forms.ValidationError('Зургийн хэмжээ 5MB-аас ихгүй байх ёстой.')
+        return img

@@ -1,131 +1,329 @@
 {% extends 'base.html' %}
-{%load static%}
+{% load static humanize %}
+{% block title %}{{ product.product_name }} — BlueCart{% endblock %}
 {% block content %}
 
-<section class="section-content padding-y bg">
+<section class="page-head">
 	<div class="container">
-
-		<!-- ============================ COMPONENT 1 ================================= -->
-		<div class="card">
-			<div class="row no-gutters">
-				<aside class="col-md-6">
-					<article class="gallery-wrap">
-						<div class="img-big-wrap">
-							<a href="#"><img src="{{product.images.url}}"></a>
-						</div> <!-- img-big-wrap.// -->
-
-					</article> <!-- gallery-wrap .end// -->
-				</aside>
-				<main class="col-md-6 border-left">
-					<article class="content-body">
-
-						<h2 class="title">{{product.product_name}}</h2>
-
-						<div class="mb-3">
-							<var class="price h4">${{product.price}}.00</var>
-						</div>
-
-						<p>Virgil Abloh’s Off-White is a streetwear-inspired collection that continues to break away
-							from the conventions of mainstream fashion. Made in Italy, these black and brown Odsy-1000
-							low-top sneakers.</p>
-
-
-						<hr>
-						<div class="row">
-							<div class="item-option-select">
-								<h6>Choose Color</h6>
-								<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-									<label class="btn btn-light">
-										<input type="radio" name="radio_color"> Silver
-									</label>
-									<label class="btn btn-light">
-										<input type="radio" name="radio_color"> Gray
-									</label>
-									<label class="btn btn-light active">
-										<input type="radio" name="radio_color checked"> Gold
-									</label>
-									<label class="btn btn-light">
-										<input type="radio" name="radio_color"> Black
-									</label>
-								</div>
-							</div>
-						</div> <!-- row.// -->
-
-						<div class="row">
-							<div class="item-option-select">
-								<h6>Select Size</h6>
-								<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-									<label class="btn btn-light">
-										<input type="radio" name="radio_color"> S
-									</label>
-									<label class="btn btn-light active">
-										<input type="radio" name="radio_color" checked> M
-									</label>
-									<label class="btn btn-light">
-										<input type="radio" name="radio_color"> L
-									</label>
-									<label class="btn btn-light">
-										<input type="radio" name="radio_color"> XL
-									</label>
-								</div>
-							</div>
-						</div> <!-- row.// -->
-						{% if product.stock == 0 %}
-						<p class="text-danger">Үлдэгдэл алга байна</p>
-						<hr>
-						<a href="{% url 'cart' %}" class="btn btn-primary disabled">
-							<span class="text">Сагсанд нэмэх</span>
-							<i class="fas fa-shopping-cart"></i>
-						</a>
-						{% else %}
-						<p class="text-success">Үлдэгдэл: {{ product.stock }}</p>
-						<hr>
-						<a href="{% url 'cart' product.id%}" class="btn btn-primary">
-							<span class="text">Сагсанд нэмэх</span>
-							<i class="fas fa-shopping-cart"></i>
-						</a>
-						{% endif %}
-					</article> <!-- product-info-aside .// -->
-				</main> <!-- col.// -->
-			</div> <!-- row.// -->
-		</div> <!-- card.// -->
-		<!-- ============================ COMPONENT 1 END .// ================================= -->
-
-		<br>
-
-		<div class="row">
-			<div class="col-md-9">
-
-				<header class="section-heading">
-					<h3>Customer Reviews </h3>
-
-				</header>
-
-				<article class="box mb-3">
-					<div class="icontext w-100">
-						<img src="{%static 'images/avatars/avatar1.jpg'%}" class="img-xs icon rounded-circle">
-						<div class="text">
-							<span class="date text-muted float-md-right">24.04.2020 </span>
-							<h6 class="mb-1">Mike John </h6>
-
-						</div>
-					</div> <!-- icontext.// -->
-					<div class="mt-3">
-						<p>
-							Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-							quis nostrud exercitation ullamco laboris nisi ut aliquip
-						</p>
-					</div>
-				</article>
-
-
-
-			</div> <!-- col.// -->
-		</div> <!-- row.// -->
-
-
-	</div> <!-- container .//  -->
+		<div class="breadcrumb-lite">
+			<a href="{% url 'index' %}">Нүүр</a>
+			{% for c in breadcrumb %} / <a href="{{ c.get_url }}">{{ c.category_name }}</a>{% endfor %}
+			/ {{ product.product_name }}
+		</div>
+	</div>
 </section>
 
+<section class="section-content padding-y">
+	<div class="container">
+
+		<div class="pd-wrap">
+			<!-- ===== Зургийн галерей ===== -->
+			<div class="pd-gallery" id="pdGallery">
+				{% if gallery|length > 1 %}
+				<div class="pd-thumbs-wrap">
+					<button type="button" class="pd-thumbs-arrow up" aria-label="Дээш"><i class="fa fa-chevron-up"></i></button>
+					<div class="pd-thumbs" id="pdThumbs">
+						{% for url in gallery %}
+						<button type="button" class="{% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}" data-src="{{ url }}">
+							<img src="{{ url }}" alt="">
+						</button>
+						{% endfor %}
+					</div>
+					<button type="button" class="pd-thumbs-arrow down" aria-label="Доош"><i class="fa fa-chevron-down"></i></button>
+				</div>
+				{% endif %}
+				<div class="pd-main-img" id="pdStage">
+					{% if gallery %}
+					<img id="pdMain" src="{{ gallery.0 }}" alt="{{ product.product_name }}">
+					<div class="pd-lens" id="pdLens"></div>
+					{% endif %}
+					{% if gallery|length > 1 %}
+					<button type="button" class="pd-nav prev" aria-label="Өмнөх"><i class="fa fa-chevron-left"></i></button>
+					<button type="button" class="pd-nav next" aria-label="Дараах"><i class="fa fa-chevron-right"></i></button>
+					{% endif %}
+				</div>
+				<div class="pd-zoom" id="pdZoom"></div>
+			</div>
+
+			<!-- ===== Үндсэн мэдээлэл ===== -->
+			<div class="pd-info">
+				{% if product.brand %}
+				<a href="{% url 'search_result' %}?keyword={{ product.brand|urlencode }}" class="pd-brand">{{ product.brand }}</a>
+				{% endif %}
+				<h1>{{ product.product_name }}</h1>
+				<div class="pd-meta">
+					<a href="{{ product.category.get_url }}"><i class="fa fa-tag mr-1"></i>{{ product.category.category_name }}</a>
+					{% if product.sku %}<span>#{{ product.sku }}</span>{% endif %}
+					<span>
+						<span class="stars">{% for i in "12345" %}<i class="fa fa-star {% if forloop.counter > review_stats.avg|floatformat:0|add:0 %}off{% endif %}"></i>{% endfor %}</span>
+						<a href="#reviews" class="ml-1" data-open-tab="tab-reviews">{{ review_stats.count }} сэтгэгдэл</a>
+					</span>
+				</div>
+
+				<div class="pd-actions">
+					{% include 'partials/list_buttons.html' with p=product mode='detail' %}
+					<button type="button" id="shareBtn" class="tool-btn"><i class="fa fa-share-alt"></i><span> Хуваалцах</span></button>
+				</div>
+
+				{% if product.description %}
+				<p class="text-muted" style="font-size:14px">{{ product.description|linebreaksbr }}</p>
+				{% endif %}
+
+				{% if specs %}
+				<dl class="pd-keyspecs">
+					<div><dt>Барааны код</dt><dd>{{ product.sku|default:"—" }}</dd></div>
+					{% if product.brand %}<div><dt>Брэнд</dt><dd>{{ product.brand }}</dd></div>{% endif %}
+					{% for s in specs|slice:":4" %}
+					<div><dt>{{ s.name }}</dt><dd>{{ s.value }}</dd></div>
+					{% endfor %}
+				</dl>
+				<a href="#details" class="small font-weight-bold d-inline-block mt-2" data-open-tab="tab-details">Бүх үзүүлэлт харах <i class="fa fa-angle-down"></i></a>
+				{% endif %}
+			</div>
+
+			<!-- ===== Худалдан авах ===== -->
+			<div class="pd-buy">
+				<div class="pd-price">
+					{{ product.price|intcomma }}₮
+					{% if product.old_price and product.old_price > product.price %}
+					<div><span class="old">{{ product.old_price|intcomma }}₮</span><span class="off">-{{ product.discount_percent }}%</span></div>
+					{% endif %}
+				</div>
+
+				<div class="mt-2">
+					{% if product.stock <= 0 %}
+					<span class="stock-pill out">Үлдэгдэлгүй</span>
+					{% else %}
+					<span class="stock-pill in"><i class="fa fa-check mr-1"></i> Үлдэгдэл: {{ product.stock }} ширхэг</span>
+					{% endif %}
+				</div>
+
+				<div class="pd-delivery">
+					<i class="fa fa-truck"></i>
+					<div><b>Энгийн хүргэлт</b><small>{{ product.delivery_info }}</small></div>
+				</div>
+
+				{% if product.stock <= 0 %}
+				<span class="btn btn-secondary btn-block btn-lg disabled">Үлдэгдэлгүй</span>
+				{% else %}
+				<a href="{% url 'add_cart' product.id %}" class="btn btn-primary btn-block btn-lg">
+					<i class="fas fa-shopping-cart mr-2"></i> Сагсанд нэмэх
+				</a>
+				{% endif %}
+
+				<div class="small text-muted mt-3">
+					<div class="mb-1"><i class="fa fa-shield-alt text-primary mr-2"></i>Баталгаат бараа</div>
+					<div><i class="fa fa-undo text-primary mr-2"></i>7 хоногт буцаалт</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- ===== Дэлгэрэнгүй / Сэтгэгдэл ===== -->
+		<div class="pd-section" id="details">
+			<div class="pd-tabs">
+				<button type="button" class="active" data-tab="tab-details">Дэлгэрэнгүй мэдээлэл</button>
+				<button type="button" data-tab="tab-reviews" id="reviews">Сэтгэгдэл ({{ review_stats.count }})</button>
+			</div>
+
+			<div class="pd-tab active" id="tab-details">
+				{% if specs or product.brand or product.sku %}
+				<h6 class="font-weight-bold mb-3">Үзүүлэлтүүд</h6>
+				<table class="spec-table mb-4">
+					{% if product.sku %}<tr><th>Барааны код</th><td>{{ product.sku }}</td></tr>{% endif %}
+					{% if product.brand %}<tr><th>Брэнд</th><td>{{ product.brand }}</td></tr>{% endif %}
+					{% for s in specs %}
+					<tr><th>{{ s.name }}</th><td>{{ s.value }}</td></tr>
+					{% endfor %}
+				</table>
+				{% endif %}
+
+				{% if product.additional_info %}
+				<h6 class="font-weight-bold mb-2">Нэмэлт мэдээлэл</h6>
+				<div class="pd-extra" id="pdExtra">{{ product.additional_info }}</div>
+				<button type="button" class="pd-toggle" id="pdExtraToggle">Дэлгэрэнгүй <i class="fa fa-angle-down"></i></button>
+				{% endif %}
+
+				{% if not specs and not product.additional_info and not product.brand and not product.sku %}
+				<p class="text-muted mb-0">Дэлгэрэнгүй мэдээлэл оруулаагүй байна.</p>
+				{% endif %}
+			</div>
+
+			<div class="pd-tab" id="tab-reviews">
+				<div class="row">
+					<div class="col-md-4 mb-4">
+						<div class="text-center p-3" style="background:var(--gray-light);border-radius:10px">
+							<div style="font-size:40px;font-weight:800">{{ review_stats.avg }}</div>
+							<div class="stars">{% for i in "12345" %}<i class="fa fa-star {% if forloop.counter > review_stats.avg|floatformat:0|add:0 %}off{% endif %}"></i>{% endfor %}</div>
+							<small class="text-muted">{{ review_stats.count }} сэтгэгдэл</small>
+						</div>
+
+						{% if user.is_authenticated %}
+						<form method="post" action="{% url 'submit_review' product.id %}" class="mt-3">
+							{% csrf_token %}
+							<label class="font-weight-bold d-block mb-1">{% if my_review %}Таны үнэлгээ{% else %}Үнэлгээ өгөх{% endif %}</label>
+							<div class="rating-input">
+								{% for v in "54321" %}
+								<input type="radio" name="rating" value="{{ v }}" id="r{{ v }}" {% if my_review and my_review.rating|stringformat:"s" == v %}checked{% elif not my_review and v == "5" %}checked{% endif %}>
+								<label for="r{{ v }}">★</label>
+								{% endfor %}
+							</div>
+							<textarea name="review" rows="3" class="form-control mt-2" placeholder="Сэтгэгдэл бичих...">{{ my_review.review|default:'' }}</textarea>
+							<button type="submit" class="btn btn-primary btn-block mt-2">{% if my_review %}Шинэчлэх{% else %}Илгээх{% endif %}</button>
+						</form>
+						{% else %}
+						<p class="mt-3 small">Сэтгэгдэл үлдээхийн тулд <a href="{% url 'accounts:signin' %}?next={{ request.path|urlencode }}">нэвтэрнэ үү</a>.</p>
+						{% endif %}
+					</div>
+					<div class="col-md-8">
+						{% for r in reviews %}
+						<div class="review-item">
+							<div class="d-flex align-items-center mb-1">
+								<span class="review-avatar">{{ r.user.first_name|default:r.user.email|first|upper }}</span>
+								<div>
+									<b>{{ r.user.first_name|default:"Хэрэглэгч" }}</b>
+									<div class="small text-muted">{{ r.created_at|date:"Y-m-d" }}</div>
+								</div>
+								<span class="stars ml-auto">{% for i in "12345" %}<i class="fa fa-star {% if forloop.counter > r.rating %}off{% endif %}"></i>{% endfor %}</span>
+							</div>
+							{% if r.review %}<p class="mb-0">{{ r.review|linebreaksbr }}</p>{% endif %}
+						</div>
+						{% empty %}
+						<p class="text-muted">Сэтгэгдэл байхгүй</p>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- ===== Төстэй бараа ===== -->
+		{% if similar %}
+		<div class="block px-0">
+			<div class="block-head">
+				<h3 class="block-title">Төстэй бараа</h3>
+				<a href="{{ product.category.get_url }}">Бүгдийг үзэх <i class="fa fa-angle-right"></i></a>
+			</div>
+			<div class="p-scroller">
+				{% for p in similar %}{% include 'partials/product_card.html' %}{% endfor %}
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- ===== Танд санал болгох ===== -->
+		{% if recommended %}
+		<div class="block px-0">
+			<div class="block-head">
+				<h3 class="block-title">Танд санал болгох</h3>
+				<a href="{% url 'store' %}">Бүгдийг үзэх <i class="fa fa-angle-right"></i></a>
+			</div>
+			<div class="p-scroller">
+				{% for p in recommended %}{% include 'partials/product_card.html' %}{% endfor %}
+			</div>
+		</div>
+		{% endif %}
+
+	</div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+    // ===== Галерей =====
+    var $thumbs = $('#pdThumbs button'), current = 0;
+    var $main = $('#pdMain'), $stage = $('#pdStage'), $lens = $('#pdLens'), $zoom = $('#pdZoom');
+    var ZOOM = 2.5;
+
+    function show(i) {
+        if (!$thumbs.length) return;
+        current = (i + $thumbs.length) % $thumbs.length;
+        var $t = $thumbs.removeClass('active').eq(current).addClass('active');
+        $main.attr('src', $t.data('src'));
+        // идэвхтэй thumbnail харагдах хэсэгт байлгах
+        var box = $('#pdThumbs')[0], el = $t[0];
+        if (el.offsetTop < box.scrollTop || el.offsetTop + el.offsetHeight > box.scrollTop + box.clientHeight) {
+            box.scrollTo({ top: el.offsetTop - 4, behavior: 'smooth' });
+        }
+    }
+    $thumbs.on('click mouseenter', function () { show($(this).data('index')); });
+    $('.pd-nav.prev').on('click', function () { show(current - 1); });
+    $('.pd-nav.next').on('click', function () { show(current + 1); });
+
+    // Thumbnail-ийг дээш/доош гүйлгэх сум
+    var thumbsBox = $('#pdThumbs')[0];
+    function updateArrows() {
+        if (!thumbsBox) return;
+        var canScroll = thumbsBox.scrollHeight > thumbsBox.clientHeight + 2;
+        $('.pd-thumbs-arrow.up').toggleClass('show', canScroll && thumbsBox.scrollTop > 2);
+        $('.pd-thumbs-arrow.down').toggleClass('show', canScroll && thumbsBox.scrollTop + thumbsBox.clientHeight < thumbsBox.scrollHeight - 2);
+    }
+    $('.pd-thumbs-arrow').on('click', function () {
+        thumbsBox.scrollBy({ top: $(this).hasClass('up') ? -170 : 170, behavior: 'smooth' });
+    });
+    $(thumbsBox).on('scroll', updateArrows);
+    $(window).on('load resize', updateArrows); updateArrows();
+
+    // Хулганаар томруулах (lens + баруун талд томруулсан зураг)
+    function imgRect() {
+        // object-fit: contain тул зургийн бодит харагдаж буй хэсгийг тооцоолно
+        var img = $main[0], sw = $stage.width(), sh = $stage.height();
+        var r = Math.min(sw / img.naturalWidth, sh / img.naturalHeight);
+        var w = img.naturalWidth * r, h = img.naturalHeight * r;
+        return { x: (sw - w) / 2, y: (sh - h) / 2, w: w, h: h };
+    }
+    var canHover = window.matchMedia('(hover: hover) and (min-width: 992px)').matches;
+    if (canHover && $main.length) {
+        $stage.on('mousemove', function (e) {
+            if ($(e.target).closest('.pd-nav').length || !$main[0].naturalWidth) { hideZoom(); return; }
+            var off = $stage.offset(), ir = imgRect();
+            var x = e.pageX - off.left - ir.x, y = e.pageY - off.top - ir.y;
+            if (x < 0 || y < 0 || x > ir.w || y > ir.h) { hideZoom(); return; }
+
+            var zw = $zoom.outerWidth(), zh = $zoom.outerHeight();
+            var lw = Math.min(zw / ZOOM, ir.w), lh = Math.min(zh / ZOOM, ir.h);
+            var lx = Math.max(0, Math.min(x - lw / 2, ir.w - lw));
+            var ly = Math.max(0, Math.min(y - lh / 2, ir.h - lh));
+            $lens.css({ width: lw, height: lh, left: ir.x + lx, top: ir.y + ly }).addClass('show');
+
+            var scale = zw / lw;
+            $zoom.css({
+                backgroundImage: 'url("' + $main.attr('src') + '")',
+                backgroundSize: (ir.w * scale) + 'px ' + (ir.h * scale) + 'px',
+                backgroundPosition: (-lx * scale) + 'px ' + (-ly * scale) + 'px'
+            }).addClass('show');
+        });
+        function hideZoom() { $lens.removeClass('show'); $zoom.removeClass('show'); }
+        $stage.on('mouseleave', hideZoom);
+    }
+
+    // Табууд
+    function openTab(id) {
+        $('.pd-tabs button').removeClass('active').filter('[data-tab="' + id + '"]').addClass('active');
+        $('.pd-tab').removeClass('active');
+        $('#' + id).addClass('active');
+    }
+    $('.pd-tabs button').on('click', function () { openTab($(this).data('tab')); });
+    $('[data-open-tab]').on('click', function () { openTab($(this).data('open-tab')); });
+    if (location.hash === '#reviews') openTab('tab-reviews');
+
+    // Нэмэлт мэдээлэл: дэлгэх / хураах
+    var $extra = $('#pdExtra');
+    if ($extra.length && $extra[0].scrollHeight <= 270) { $extra.addClass('expanded'); $('#pdExtraToggle').hide(); }
+    $('#pdExtraToggle').on('click', function () {
+        $extra.toggleClass('expanded');
+        $(this).html($extra.hasClass('expanded') ? 'Хураах <i class="fa fa-angle-up"></i>' : 'Дэлгэрэнгүй <i class="fa fa-angle-down"></i>');
+    });
+
+    // Хуваалцах: холбоос хуулах
+    $('#shareBtn').on('click', function () {
+        var url = location.href.split('#')[0], $b = $(this);
+        if (navigator.share) { navigator.share({ title: document.title, url: url }).catch(function () {}); return; }
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(function () {
+                $b.html('<i class="fa fa-check mr-1"></i> Холбоос хуулагдлаа');
+                setTimeout(function () { $b.html('<i class="fa fa-share-alt mr-1"></i> Хуваалцах'); }, 2000);
+            });
+        }
+    });
+});
+</script>
 {% endblock %}

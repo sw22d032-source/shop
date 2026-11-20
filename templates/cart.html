@@ -1,7 +1,11 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% load static %}
 {% block content %}
 <!-- ============================ COMPONENT 1 ================================= -->
+<section class="section-content padding-y">
+<div class="container">
+<h2 class="font-weight-bold mb-3">Миний сагс</h2>
 <div class="row">
 	<aside class="col-lg-9">
 		<div class="card">
@@ -47,7 +51,7 @@
 									<input type="text" class="form-control" value="{{ item.quantity }}" readonly>
 
 									<div class="input-group-append">
-										<a href="{% url 'add_cart' item.product.id %}" class="btn btn-light btn-plus">
+										<a href="{% url 'add_cart' item.product.id %}" class="btn btn-light btn-plus{% if item.quantity >= item.product.stock %} disabled{% endif %}">
 											<i class="fa fa-plus"></i>
 										</a>
 									</div>
@@ -57,8 +61,8 @@
 
 						<td>
 							<div class="price-wrap">
-								<var class="price">${{ item.sub_total }}</var>
-								<small class="text-muted"> ${{ item.product.price }} each </small>
+								<var class="price">{{ item.sub_total|intcomma }}₮</var>
+								<small class="text-muted"> {{ item.product.price|intcomma }}₮ each </small>
 							</div>
 						</td>
 
@@ -70,35 +74,39 @@
 				</tbody>
 			</table>
 			{% else %}
-			<h4 class="text-center p-4">Your cart is empty 😢</h4>
+			<div class="text-center p-5"><i class="fa fa-shopping-cart fa-3x text-muted mb-3"></i><h5>Таны сагс хоосон байна</h5><a href="{% url 'store' %}" class="btn btn-primary mt-2">Дэлгүүр хэсэх</a></div>
 			{% endif %}
 		</div>
 	</aside>
 
 	<aside class="col-lg-3">
-		<div class="card">
+		<div class="card summary-card">
 			<div class="card-body">
 				<dl class="dlist-align">
 					<dt>Total price:</dt>
-					<dd class="text-right">${{ total }}</dd>
+					<dd class="text-right">{{ total|intcomma }}₮</dd>
 				</dl>
 				<dl class="dlist-align">
-					<dt>Tax:</dt>
-					<dd class="text-right">${{ tax }}</dd>
+					<dt>Tax (10%):</dt>
+					<dd class="text-right">{{ tax|intcomma }}₮</dd>
 				</dl>
 				<dl class="dlist-align">
 					<dt>Total:</dt>
-					<dd class="text-right text-dark b"><strong>${{ grand_total }}</strong></dd>
+					<dd class="text-right grand"><strong>{{ grand_total|intcomma }}₮</strong></dd>
 				</dl>
 				<hr>
 				<p class="text-center mb-3">
 					<img src="{% static 'images/misc/payments.png' %}" height="26">
 				</p>
-				<a href="" class="btn btn-primary btn-block"> Checkout </a>
-				<a href="{% url 'store'  %}" class="btn btn-light btn-block">Continue Shopping {{ cart_count }}</a>
+				{% if cart_items %}
+				<a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
+				{% endif %}
+				<a href="{% url 'store'  %}" class="btn btn-light btn-block">Continue Shopping</a>
 			</div>
 		</div>
 	</aside>
 </div>
+</div>
+</section>
 <!-- ============================ COMPONENT 1 END .// ================================= -->
 {% endblock %}

@@ -1,99 +1,132 @@
-{% load static %}
-<header class="section-header">
-	<nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom">
+<header>
+	<!-- Top bar -->
+	<div class="topbar">
 		<div class="container">
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4"
-				aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
+			<div class="left">
+				<a href="#"><i class="fa fa-truck"></i> Хүргэлтийн нөхцөл</a>
+				<a href="#"><i class="fa fa-question-circle"></i> Тусламж</a>
+				<a href="#"><i class="fa fa-phone"></i> 7700-0000</a>
+			</div>
+			<div class="right">
+				{% if user.is_authenticated %}
+				<a href="{% url 'accounts:profile' %}"><i class="far fa-user-circle"></i> {{ user.first_name|default:user.email }}</a>
+				<a href="{% url 'accounts:signout' %}">Гарах</a>
+				{% else %}
+				<a href="{% url 'accounts:signin' %}">Нэвтрэх</a>
+				<a href="{% url 'accounts:register' %}">Бүртгүүлэх</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<!-- Logo + search + icons -->
+	<div class="main-header">
+		<div class="container">
+			<a href="{% url 'index' %}" class="brand">Blue<span>Cart</span></a>
+
+			<form action="{% url 'search_result' %}" method="GET" class="header-search">
+				<select name="category">
+					<option value="">Бүх ангилал</option>
+					{% for c in categories %}
+					<option value="{{ c.slug }}" {% if request.GET.category == c.slug %}selected{% endif %}>{{ c.category_name }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" name="keyword" value="{{ request.GET.keyword|default:'' }}" placeholder="Бараа, брэнд хайх...">
+				<button type="submit" aria-label="Хайх"><i class="fa fa-search"></i></button>
+			</form>
+
+			<div class="header-icons">
+				{% if user.is_authenticated %}
+				<a href="{% url 'accounts:profile' %}" class="header-icon"><i class="far fa-user"></i><small>Профайл</small></a>
+				{% else %}
+				<a href="{% url 'accounts:signin' %}" class="header-icon"><i class="far fa-user"></i><small>Нэвтрэх</small></a>
+				{% endif %}
+				<a href="{% url 'compare' %}" class="header-icon">
+					<i class="fa fa-exchange-alt"></i><small>Харьцуулах</small>
+					<span class="count js-count-compare" {% if not compare_count %}style="display:none"{% endif %}>{{ compare_count }}</span>
+				</a>
+				<a href="{% url 'wishlist' %}" class="header-icon">
+					<i class="far fa-heart"></i><small>Хадгалсан</small>
+					<span class="count js-count-wishlist" {% if not wishlist_count %}style="display:none"{% endif %}>{{ wishlist_count }}</span>
+				</a>
+				<a href="{% url 'dashboard' %}" class="header-icon"><i class="fa fa-box"></i><small>Захиалга</small></a>
+				<a href="{% url 'cart' %}" class="header-icon">
+					<i class="fa fa-shopping-cart"></i><small>Сагс</small>
+					{% if cart_count %}<span class="count">{{ cart_count }}</span>{% endif %}
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Category nav + mega menu -->
+	<nav class="main-nav">
+		<div class="container position-relative">
+			<button type="button" class="cat-btn" id="megaToggle" aria-expanded="false">
+				<i class="fa fa-bars"></i> Ангилал
 			</button>
-			<div class="collapse navbar-collapse" id="navbarTop4">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item dropdown">
-						<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"> Language </a>
-						<ul class="dropdown-menu small">
-							<li><a class="dropdown-item" href="#">English</a></li>
-							<li><a class="dropdown-item" href="#">Arabic</a></li>
-							<li><a class="dropdown-item" href="#">Russian </a></li>
-						</ul>
-					</li>
-					<li class="nav-item dropdown">
-						<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"> USD </a>
-						<ul class="dropdown-menu small">
-							<li><a class="dropdown-item" href="#">EUR</a></li>
-							<li><a class="dropdown-item" href="#">AED</a></li>
-							<li><a class="dropdown-item" href="#">RUBL </a></li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="navbar-nav">
-					<li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
-					<li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
-				</ul> <!-- list-inline //  -->
-			</div> <!-- navbar-collapse .// -->
-		</div> <!-- container //  -->
-	</nav>
+			<div class="nav-links">
+				<a href="{% url 'index' %}" class="nav-link-item {% if request.path == '/' %}active{% endif %}">Нүүр</a>
+				<a href="{% url 'store' %}" class="nav-link-item {% if request.path == '/store/' %}active{% endif %}">Бүх бараа</a>
+				{% for c in menu_categories %}
+				<a href="{{ c.get_url }}" class="nav-link-item {% if request.path == c.get_url %}active{% endif %}">{{ c.category_name }}</a>
+				{% endfor %}
+			</div>
 
-	<section class="header-main border-bottom">
-		<div class="container">
-			<div class="row align-items-center">
-				<div class="col-lg-2 col-md-3 col-6">
-					<a href="/" class="brand-wrap">
-						<img class="logo" src="{% static 'images/logo.png' %}">
-					</a> <!-- brand-wrap.// -->
-				</div>
-				<div class="col-lg col-sm col-md col-6 flex-grow-0">
-					<div class="category-wrap dropdown d-inline-block float-right">
-						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-bars"></i> All category
-						</button>
-						<div class="dropdown-menu">
-							{%if categories%}
-							{%for i in categories%}
-							<a class="dropdown-item" href="{{i.slug }}">{{i.category_name}}</a>
-							{%endfor%}
-							{%else%}
-							<a class="dropdown-item" href="#">categories alga</a>
-							{%endif%}
-						</div>
-					</div> <!-- category-wrap.// -->
-				</div> <!-- col.// -->
-				<a href="{% url 'store' %}" class="btn btn-outline-primary">Store</a>
-				<div class="col-lg  col-md-6 col-sm-12 col">
-					<form action="{% url 'search_result' %}" class="search" method="GET">
-						<div class="input-group w-100">
-							<input type="text" class="form-control" style="width:60%;" placeholder="Search" name="keyword">
-
-							<div class="input-group-append">
-								<button class="btn btn-primary" type="submit">
-									<i class="fa fa-search"></i>
-								</button>
-							</div>
-						</div>
-					</form> <!-- search-wrap .end// -->
-					
-				</div> <!-- col.// -->
-				<div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
-					<div class="d-flex justify-content-end mb-3 mb-lg-0">
-						<div class="widget-header">
-							<small class="title text-muted">Welcome guest!</small>
-							<div>
-								<a href="{% url 'accounts:signin' %} ">Sign in</a> <span class="dark-transp"> | </span>
-								<a href="{% url 'accounts:register' %}"> Register</a>
-							</div>
-						</div>
-						<a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
-							<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i>
-							</div>
-							<span class="badge badge-pill badge-danger notify">
-								{%if cart_count%}
-								{{ cart_count }}
-								{%else%}
-								сагс хоосон
-								{%endif%}
-							</span>
+			<div class="mega" id="megaMenu">
+				<ul class="mega-left">
+					{% for c in menu_categories %}
+					<li data-pane="pane-{{ c.id }}" class="{% if forloop.first %}active{% endif %}">
+						<a href="{{ c.get_url }}">
+							<i class="{{ c.icon|default:'fa fa-th-large' }} mega-ico"></i>
+							<span>{{ c.category_name }}</span>
+							<i class="fa fa-angle-right ml-auto"></i>
 						</a>
-					</div> <!-- widgets-wrap.// -->
-				</div> <!-- col.// -->
-			</div> <!-- row.// -->
-		</div> <!-- container.// -->
-	</section> <!-- header-main .// -->
+					</li>
+					{% empty %}
+					<li class="text-muted p-3">Ангилал алга</li>
+					{% endfor %}
+				</ul>
+
+				{% for c in menu_categories %}
+				<div class="mega-pane {% if forloop.first %}active{% endif %}" id="pane-{{ c.id }}">
+					<div class="mega-main">
+						<div class="mega-head">
+							<h5>{{ c.category_name }}</h5>
+							<a href="{{ c.get_url }}">Бүгдийг үзэх</a>
+						</div>
+						{% if c.subs %}
+						<div class="mega-cols">
+							{% for sub in c.subs %}
+							<div class="mega-group">
+								<a href="{{ sub.get_url }}" class="mega-group-title">{{ sub.category_name }}</a>
+								{% for leaf in sub.subs %}
+								<a href="{{ leaf.get_url }}" class="mega-link">{{ leaf.category_name }}</a>
+								{% endfor %}
+								{% if sub.subs %}<a href="{{ sub.get_url }}" class="mega-more">Бүгдийг үзэх <i class="fa fa-arrow-right"></i></a>{% endif %}
+							</div>
+							{% endfor %}
+						</div>
+						{% else %}
+						<p class="text-muted mb-2">Дэд ангилал нэмэгдээгүй байна.</p>
+						<a href="{{ c.get_url }}" class="mega-more">{{ c.category_name }} ангиллын бараа үзэх <i class="fa fa-arrow-right"></i></a>
+						{% endif %}
+					</div>
+					<div class="mega-side">
+						<h6>Хамгийн их үзсэн</h6>
+						<div class="mega-thumbs">
+							{% for p in c.top_products %}
+							<a href="{{ p.get_url }}" title="{{ p.product_name }}">
+								{% if p.images %}<img src="{{ p.images.url }}" alt="{{ p.product_name }}" loading="lazy">{% endif %}
+							</a>
+							{% empty %}
+							<span class="text-muted small">Бараа алга</span>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</nav>
+	<div class="mega-backdrop" id="megaBackdrop"></div>
+</header>

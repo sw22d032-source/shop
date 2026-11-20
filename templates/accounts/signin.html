@@ -1,49 +1,77 @@
 {% extends "base.html" %}
 
-{% block title %}Sign In{% endblock %}
+{% block title %}Нэвтрэх — BlueCart{% endblock %}
+
+{% block messages %}{% endblock %}
 
 {% block content %}
-<div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
-  <div class="card-body">
-    <h4 class="card-title mb-4">Sign in</h4>
+<section class="auth-page">
+	<div class="auth-box">
+		<h3 class="auth-title">Нэвтрэх</h3>
 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      {% endfor %}
-    {% endif %}
+		{% for message in messages %}
+		<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+		{% endfor %}
 
-    <form method="post">
-      {% csrf_token %}
-      <div class="form-group">
-        <input type="text" name="email" class="form-control" placeholder="Email or Phone" required>
+		{% if step == 'password' %}
+		<!-- ===== Алхам 2: нууц үг ===== -->
+		<form method="post" class="auth-form">
+			{% csrf_token %}
+			<input type="hidden" name="next" value="{{ next }}">
+			<input type="hidden" name="email" value="{{ identifier }}">
 
-      </div>
-      <div class="form-group">
-         <input type="password" name="password" class="form-control" placeholder="Password" required>
-      </div>
-      <div class="form-group">
-         <a href="#" class="float-right">Forgot password?</a>
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
-      </div>
-    </form>
-  </div>
-</div>
+			<div class="auth-who">
+				<span class="auth-avatar">{{ display_name|first|upper }}</span>
+				<div class="flex-grow-1 text-truncate">
+					<b>{{ display_name }}</b>
+					<small>{{ identifier }}</small>
+				</div>
+				<a href="{% url 'accounts:signin' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Өөрчлөх</a>
+			</div>
 
-<p class="text-center mt-4">
-  Don't have an account? <a href="{% url 'accounts:register' %}">Sign up</a>
-</p>
+			<label class="auth-label" for="pw">Нууц үг</label>
+			<div class="auth-pw">
+				<input type="password" name="password" id="pw" class="auth-input{% if error %} is-invalid{% endif %}" placeholder="Нууц үгээ оруулна уу" required autofocus>
+				<button type="button" class="auth-eye" aria-label="Нууц үг харах"><i class="far fa-eye"></i></button>
+			</div>
+			{% if error %}<div class="auth-error">{{ error }}</div>{% endif %}
 
-<script type="text/javascript">
-  $(document).ready(function(){
-    setTimeout(function(){
-      $('.alert').fadeOut('slow');
-    }, 1500); 
-  });
+			<button type="submit" class="auth-btn">Нэвтрэх <i class="fa fa-arrow-right ml-2"></i></button>
+		</form>
+
+		{% else %}
+		<!-- ===== Алхам 1: имэйл / утас ===== -->
+		<form method="post" class="auth-form">
+			{% csrf_token %}
+			<input type="hidden" name="next" value="{{ next }}">
+			<label class="auth-label" for="ident">Нэвтрэх</label>
+			<input type="text" name="email" id="ident" value="{{ identifier }}" class="auth-input{% if error or not_found %} is-invalid{% endif %}"
+				placeholder="И-мэйл хаяг эсвэл гар утасны дугаар" required autofocus autocomplete="username">
+			{% if error %}<div class="auth-error">{{ error }}</div>{% endif %}
+			{% if not_found %}
+			<div class="auth-error">
+				Ийм хэрэглэгч бүртгэлгүй байна.
+				<a href="{% url 'accounts:register' %}?email={{ identifier|urlencode }}">Шинээр бүртгүүлэх үү?</a>
+			</div>
+			{% endif %}
+
+			<button type="submit" class="auth-btn">Үргэлжлүүлэх <i class="fa fa-arrow-right ml-2"></i></button>
+		</form>
+
+		<p class="auth-switch">Шинэ хэрэглэгч болох <a href="{% url 'accounts:register' %}">Бүртгүүлэх</a></p>
+
+		{% include 'accounts/_social.html' %}
+		{% endif %}
+	</div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$('.auth-eye').on('click', function () {
+    var $i = $('#pw'), show = $i.attr('type') === 'password';
+    $i.attr('type', show ? 'text' : 'password');
+    $(this).find('i').toggleClass('fa-eye', !show).toggleClass('fa-eye-slash', show);
+});
 </script>
 {% endblock %}

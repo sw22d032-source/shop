@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Миний профайл — BlueCart{% endblock %}
+{% block content %}
+<section class="pf-page">
+	<div class="container">
+		<div class="pf-layout">
+			<aside class="pf-nav">
+				<div class="pf-nav-user">
+					<span class="pf-mini-avatar">
+						{% if account.pro_image %}<img src="{{ account.pro_image.url }}" alt="">{% else %}{{ user.first_name|default:user.email|first|upper }}{% endif %}
+					</span>
+					<div class="text-truncate">
+						<b>{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}Хэрэглэгч{% endif %}</b>
+						<small>{{ user.email }}</small>
+					</div>
+				</div>
+				{% with p=request.resolver_match.url_name %}
+				<a href="{% url 'accounts:profile' %}" class="{% if p == 'profile' or p == 'profile_info' or p == 'profile_password' or p == 'profile_phone' %}active{% endif %}"><i class="far fa-user"></i> Хувийн мэдээлэл</a>
+				<a href="{% url 'dashboard' %}"><i class="fa fa-box"></i> Миний захиалга</a>
+				<a href="{% url 'wishlist' %}"><i class="far fa-heart"></i> Хадгалсан бараа</a>
+				<a href="{% url 'compare' %}"><i class="fa fa-exchange-alt"></i> Харьцуулах</a>
+				<a href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Сагс</a>
+				<a href="{% url 'accounts:signout' %}" class="logout"><i class="fa fa-sign-out-alt"></i> Гарах</a>
+				{% endwith %}
+			</aside>
+			<main class="pf-main">
+				{% block pf_content %}{% endblock %}
+			</main>
+		</div>
+	</div>
+</section>
+{% endblock %}

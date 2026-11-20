@@ -1,0 +1,73 @@
+{% extends "accounts/_profile_base.html" %}
+{% block pf_content %}
+<h4 class="pf-title">Хувийн мэдээлэл</h4>
+<div class="pf-overview">
+	<div class="pf-card pf-avatar-card">
+		<div class="pf-avatar">
+			{% if account.pro_image %}<img src="{{ account.pro_image.url }}" alt="Профайл зураг">{% else %}<i class="fa fa-user"></i>{% endif %}
+		</div>
+		<div class="pf-email">{{ user.email }}</div>
+		<a href="{% url 'accounts:profile_info' %}" class="pf-sub">Мэдээлэл засах</a>
+
+		<form method="post" action="{% url 'accounts:profile_avatar' %}" enctype="multipart/form-data" id="avatarForm">
+			{% csrf_token %}
+			<input type="file" name="pro_image" id="avatarInput" accept="image/*" hidden>
+			<button type="button" class="pf-btn-outline" onclick="document.getElementById('avatarInput').click()">Зураг оруулах</button>
+		</form>
+		{% if account.pro_image %}
+		<form method="post" action="{% url 'accounts:profile_avatar' %}">
+			{% csrf_token %}<input type="hidden" name="remove" value="1">
+			<button type="submit" class="pf-link-danger">Зураг устгах</button>
+		</form>
+		{% endif %}
+	</div>
+
+	<div class="pf-tiles">
+		<a href="{% url 'accounts:profile_info' %}" class="pf-card pf-tile">
+			<i class="far fa-user"></i>
+			<b>Хувийн мэдээлэл</b>
+			<small>{% if user.first_name %}{{ user.last_name }} {{ user.first_name }}{% else %}Мэдээлэл засах{% endif %}</small>
+		</a>
+		<a href="{% url 'accounts:profile_password' %}" class="pf-card pf-tile">
+			<i class="fa fa-lock"></i>
+			<b>Нууц үг</b>
+			<small>{% if user.has_usable_password %}Шинэчлэх{% else %}Тохируулаагүй — тохируулах{% endif %}</small>
+		</a>
+		<a href="{% url 'accounts:profile_phone' %}" class="pf-card pf-tile">
+			<i class="fa fa-mobile-alt"></i>
+			<b>Гар утас</b>
+			<small>{% if account.phone_number %}{{ masked_phone }} · Солих{% else %}Нэмэгдээгүй — нэмэх{% endif %}</small>
+		</a>
+		{% if account.email_verified %}
+		<div class="pf-card pf-tile static">
+			<i class="far fa-envelope"></i>
+			<b>И-мэйл</b>
+			<small class="ok"><i class="fa fa-check-circle"></i> Баталгаажсан</small>
+		</div>
+		{% else %}
+		<a href="{% url 'accounts:profile_email' %}" class="pf-card pf-tile">
+			<i class="far fa-envelope"></i>
+			<b>И-мэйл</b>
+			<small class="warn">Баталгаажаагүй — баталгаажуулах</small>
+		</a>
+		{% endif %}
+	</div>
+</div>
+
+{% if not account.phone_number or not user.first_name %}
+<div class="pf-hint">
+	<i class="fa fa-info-circle"></i>
+	Захиалга хурдан өгөхийн тулд
+	{% if not user.first_name %}<a href="{% url 'accounts:profile_info' %}">нэрээ</a>{% endif %}
+	{% if not user.first_name and not account.phone_number %} болон {% endif %}
+	{% if not account.phone_number %}<a href="{% url 'accounts:profile_phone' %}">утасны дугаараа</a>{% endif %}
+	оруулна уу.
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+$('#avatarInput').on('change', function () { if (this.files.length) $('#avatarForm').submit(); });
+</script>
+{% endblock %}

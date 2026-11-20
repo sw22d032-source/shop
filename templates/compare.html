@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Харьцуулах — BlueCart{% endblock %}
+{% block content %}
+
+<section class="page-head">
+	<div class="container d-flex justify-content-between align-items-end flex-wrap">
+		<div>
+			<div class="breadcrumb-lite"><a href="{% url 'index' %}">Нүүр</a> / Харьцуулах</div>
+			<h2><i class="fa fa-exchange-alt text-primary mr-2"></i>Бараа харьцуулах <small class="text-muted" style="font-size:16px">({{ products|length }}/{{ limit }})</small></h2>
+		</div>
+		{% if products %}
+		<div class="d-flex align-items-center mt-2">
+			<label class="mb-0 mr-3 small"><input type="checkbox" id="onlyDiff" class="mr-1"> Зөвхөн ялгаатайг харуулах</label>
+			<form method="post" action="{% url 'compare_clear' %}">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-light btn-sm"><i class="fa fa-trash mr-1"></i> Бүгдийг арилгах</button>
+			</form>
+		</div>
+		{% endif %}
+	</div>
+</section>
+
+<section class="section-content padding-y">
+	<div class="container">
+		{% if products %}
+		<div class="compare-wrap">
+			<table class="compare-table">
+				<tr class="cmp-head">
+					<th></th>
+					{% for p in products %}
+					<td>
+						<form method="post" action="{% url 'compare_toggle' p.id %}" class="cmp-remove">
+							{% csrf_token %}
+							<input type="hidden" name="next" value="{% url 'compare' %}">
+							<button type="submit" title="Хасах" aria-label="Хасах">&times;</button>
+						</form>
+						<a href="{{ p.get_url }}" class="cmp-img">{% if p.images %}<img src="{{ p.images.url }}" alt="{{ p.product_name }}">{% endif %}</a>
+						<a href="{{ p.get_url }}" class="cmp-name">{{ p.product_name }}</a>
+						<div class="cmp-price">{{ p.price|intcomma }}₮</div>
+						{% if p.stock > 0 and p.is_available %}
+						<a href="{% url 'add_cart' p.id %}" class="btn btn-primary btn-sm btn-block"><i class="fa fa-shopping-cart mr-1"></i> Сагслах</a>
+						{% else %}
+						<span class="btn btn-secondary btn-sm btn-block disabled">Үлдэгдэлгүй</span>
+						{% endif %}
+					</td>
+					{% endfor %}
+					{% if products|length < limit %}
+					<td class="cmp-add">
+						<a href="{% url 'store' %}"><i class="fa fa-plus"></i><span>Бараа нэмэх</span></a>
+					</td>
+					{% endif %}
+				</tr>
+				<tr><th>Брэнд</th>{% for p in products %}<td>{{ p.brand|default:"—" }}</td>{% endfor %}{% if products|length < limit %}<td></td>{% endif %}</tr>
+				<tr><th>Барааны код</th>{% for p in products %}<td>{{ p.sku|default:"—" }}</td>{% endfor %}{% if products|length < limit %}<td></td>{% endif %}</tr>
+				<tr><th>Ангилал</th>{% for p in products %}<td>{{ p.category.category_name }}</td>{% endfor %}{% if products|length < limit %}<td></td>{% endif %}</tr>
+				<tr><th>Үлдэгдэл</th>{% for p in products %}<td>{% if p.stock > 0 %}{{ p.stock }} ширхэг{% else %}<span class="text-danger">Дууссан</span>{% endif %}</td>{% endfor %}{% if products|length < limit %}<td></td>{% endif %}</tr>
+				<tr><th>Үнэлгээ</th>{% for p in products %}<td><span class="stars"><i class="fa fa-star"></i></span> {{ p.stats.avg }} <small class="text-muted">({{ p.stats.count }})</small></td>{% endfor %}{% if products|length < limit %}<td></td>{% endif %}</tr>
+				<tr><th>Хүргэлт</th>{% for p in products %}<td>{{ p.delivery_info }}</td>{% endfor %}{% if products|length < limit %}<td></td>{% endif %}</tr>
+				{% if spec_rows %}
+				<tr class="cmp-section"><th colspan="{{ products|length|add:2 }}">Үзүүлэлтүүд</th></tr>
+				{% for row in spec_rows %}
+				<tr class="{% if row.differs %}differs{% else %}same{% endif %}">
+					<th>{{ row.name }}</th>
+					{% for v in row.values %}<td>{{ v }}</td>{% endfor %}
+					{% if products|length < limit %}<td></td>{% endif %}
+				</tr>
+				{% endfor %}
+				{% endif %}
+			</table>
+		</div>
+		{% else %}
+		<div class="card">
+			<div class="card-body text-center p-5">
+				<i class="fa fa-exchange-alt fa-3x text-muted mb-3"></i>
+				<h5>Харьцуулах бараа алга байна</h5>
+				<p class="text-muted">Барааны карт дээрх <i class="fa fa-exchange-alt"></i> товчийг дарж {{ limit }} хүртэл бараа нэмнэ.</p>
+				<a href="{% url 'store' %}" class="btn btn-primary">Дэлгүүр хэсэх</a>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$('#onlyDiff').on('change', function () { $('.compare-table tr.same').toggle(!this.checked); });
+</script>
+{% endblock %}

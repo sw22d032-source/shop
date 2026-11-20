@@ -1,30 +1,46 @@
-<!-- <footer class="section-footer border-top">
-    <div class="container">
-        <section class="footer-bottom border-top row">
-            <div class="col-md-2">
-                <p class="text-muted"> &copy 2019 Company name </p>
-            </div>
-            <div class="col-md-8 text-md-center">
-                <span class="px-2">info@pixsellz.io</span>
-                <span class="px-2">+879-332-9375</span>
-                <span class="px-2">Street name 123, Avanue abc</span>
-            </div>
-            <div class="col-md-2 text-md-right text-muted">
-                <i class="fab fa-lg fa-cc-visa"></i>
-                <i class="fab fa-lg fa-cc-paypal"></i>
-                <i class="fab fa-lg fa-cc-mastercard"></i>
-            </div>
-        </section>
-    </div>
-</footer> -->
-
-<footer class="section-footer border-top padding-y">
+<footer class="site-footer">
 	<div class="container">
-		<p class="float-md-right">
-			&copy Copyright 2019 All rights reserved
-		</p>
-		<p>
-			<a href="#">Terms and conditions</a>
-		</p>
-	</div><!-- //container -->
+		<div class="row">
+			<div class="col-md-4 mb-4">
+				<a href="{% url 'index' %}" class="brand">Blue<span>Cart</span></a>
+				<p>Чанартай бараа, хурдан хүргэлт. Бүх төрлийн бараа нэг дороос.</p>
+				<div class="social">
+					<a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+					<a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+					<a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+				</div>
+			</div>
+			<div class="col-6 col-md-2 mb-4">
+				<h6>Ангилал</h6>
+				{% for c in categories|slice:":6" %}
+				<a href="{{ c.get_url }}">{{ c.category_name }}</a>
+				{% endfor %}
+			</div>
+			<div class="col-6 col-md-3 mb-4">
+				<h6>Хэрэглэгч</h6>
+				{% if user.is_authenticated %}
+				<a href="{% url 'accounts:profile' %}">Миний профайл</a>
+				<a href="{% url 'dashboard' %}">Миний захиалга</a>
+				<a href="{% url 'accounts:signout' %}">Гарах</a>
+				{% else %}
+				<a href="{% url 'accounts:signin' %}">Нэвтрэх</a>
+				<a href="{% url 'accounts:register' %}">Бүртгүүлэх</a>
+				{% endif %}
+				<a href="{% url 'cart' %}">Сагс</a>
+			</div>
+			<div class="col-md-3 mb-4">
+				<h6>Холбоо барих</h6>
+				<p class="mb-1"><i class="fa fa-phone mr-2"></i> 7700-0000</p>
+				<p class="mb-1"><i class="fa fa-envelope mr-2"></i> info@bluecart.mn</p>
+				<p class="mb-1"><i class="fa fa-map-marker-alt mr-2"></i> Улаанбаатар хот</p>
+			</div>
+		</div>
+		<div class="bottom d-flex justify-content-between flex-wrap">
+			<span>&copy; {% now "Y" %} BlueCart. Бүх эрх хуулиар хамгаалагдсан.</span>
+			<span>
+				<i class="fab fa-lg fa-cc-visa"></i>
+				<i class="fab fa-lg fa-cc-mastercard ml-2"></i>
+			</span>
+		</div>
+	</div>
 </footer>

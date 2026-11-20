@@ -1,57 +1,101 @@
 {% load static %}
 <!DOCTYPE HTML>
-<html lang="en">
+<html lang="mn">
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="cache-control" content="max-age=604800" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <title>GreatKart | One of the Biggest Online Shopping Platform</title>
-    
-    <link href="{% static 'images/favicon.ico' %} " rel="shortcut icon" type="image/x-icon">
+    <title>{% block title %}BlueCart — Онлайн дэлгүүр{% endblock %}</title>
 
-    <!-- jQuery -->
-    <script src="{% static 'js/jquery-2.0.0.min.js' %} " type="text/javascript"></script>
+    <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
 
-    <!-- Bootstrap4 files-->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %} " type="text/javascript"></script>
+    <!-- jQuery + Bootstrap 4 -->
+    <script src="{% static 'js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
 
     <!-- Font awesome 5 -->
-    <link href="{% static 'fonts/fontawesome/css/all.min.css' %} " type="text/css" rel="stylesheet">
+    <link href="{% static 'fonts/fontawesome/css/all.min.css' %}" type="text/css" rel="stylesheet">
 
-    <!-- custom style -->
+    <!-- Template style + шинэ theme -->
     <link href="{% static 'css/ui.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'css/responsive.css' %} " rel="stylesheet" media="only screen and (max-width: 1200px)" />
+    <link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+    <link href="{% static 'css/theme.css' %}?v={{ asset_version }}" rel="stylesheet" type="text/css" />
 
-    <!-- custom javascript -->
-    <script src="{% static 'js/script.js' %} " type="text/javascript"></script>
-
-    <script type="text/javascript">
-        /// some script
-
-        // jquery ready start
-        $(document).ready(function () {
-            // jQuery code
-
-        });
-        // jquery end
-    </script>
-
+    <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
 </head>
 
 <body>
-    <!--Header-->
     {% include 'partials/header.html' %}
 
-    <!--Content-->
+    {% block messages %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endblock %}
+
     {% block content %}
     {% endblock %}
 
-    <!--Footer-->
     {% include 'partials/footer.html' %}
+
+    <script>
+    $(function () {
+        var $menu = $('#megaMenu'), $btn = $('#megaToggle'), $bd = $('#megaBackdrop');
+        function openMenu() { $menu.addClass('open'); $bd.addClass('open'); $btn.attr('aria-expanded', 'true'); }
+        function closeMenu() { $menu.removeClass('open'); $bd.removeClass('open'); $btn.attr('aria-expanded', 'false'); }
+        $btn.on('click', function (e) { e.stopPropagation(); $menu.hasClass('open') ? closeMenu() : openMenu(); });
+        $bd.on('click', closeMenu);
+        $(document).on('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+        // Зүүн талын ангилал дээр хулгана очиход баруун талын хэсэг солигдоно
+        $menu.on('mouseenter', '.mega-left li[data-pane]', function () {
+            var id = $(this).data('pane');
+            $menu.find('.mega-left li').removeClass('active');
+            $(this).addClass('active');
+            $menu.find('.mega-pane').removeClass('active');
+            $('#' + id).addClass('active');
+        });
+    });
+    </script>
+    <div id="toast" class="site-toast"></div>
+    <script>
+    $(function () {
+        var toastTimer;
+        function toast(msg, link) {
+            var $t = $('#toast').html(msg + (link ? ' <a href="' + link.href + '">' + link.text + '</a>' : ''));
+            $t.addClass('show'); clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () { $t.removeClass('show'); }, 3000);
+        }
+        // Хадгалах / Харьцуулах — хуудас дахин ачаалахгүйгээр
+        $(document).on('submit', 'form.js-toggle', function (e) {
+            e.preventDefault();
+            var $f = $(this), kind = $f.data('kind'), pid = $f.data('product');
+            $.ajax({
+                url: $f.attr('action'), method: 'POST', data: $f.serialize(),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).done(function (r) {
+                var $btns = $('form.js-toggle[data-kind="' + kind + '"][data-product="' + pid + '"] .tool-btn');
+                $btns.toggleClass('active', r.active);
+                if (kind === 'wishlist') $btns.find('i').toggleClass('fas', r.active).toggleClass('far', !r.active);
+                $('.js-count-' + kind).text(r.count).toggle(r.count > 0);
+                toast(r.message, kind === 'compare' && r.active ? { href: r.compare_url, text: 'Харьцуулах →' } : null);
+            }).fail(function (x) {
+                if (x.status === 401 && x.responseJSON) { window.location = x.responseJSON.login_url; }
+                else { $f.off('submit'); $f[0].submit(); }
+            });
+        });
+    });
+    </script>
+    {% block scripts %}{% endblock %}
 </body>
 
 </html>

@@ -1,0 +1,23 @@
+{% extends "accounts/_profile_base.html" %}
+{% block pf_content %}
+<div class="pf-card pf-form-card">
+	<div class="pf-form-head">
+		<h5>Гар утас</h5>
+		<small>{% if account.phone_number %}Одоогийн дугаар: {{ account.phone_number }}{% else %}Утасны дугаар нэмэгдээгүй байна.{% endif %} Захиалгын хүргэлтэд ашиглагдана.</small>
+	</div>
+	<form method="post" class="pf-form" novalidate>
+		{% csrf_token %}
+		<div class="pf-grid one">
+			<div>
+				<label><span class="req">*</span> Утасны дугаар</label>
+				<input type="tel" name="phone_number" value="{{ form.phone_number.value|default:'' }}" maxlength="8" class="auth-input{% if form.phone_number.errors %} is-invalid{% endif %}" placeholder="99112233">
+				{% for e in form.phone_number.errors %}<div class="auth-error">{{ e }}</div>{% endfor %}
+			</div>
+		</div>
+		<div class="pf-grid mt-3">
+			<div><a href="{% url 'accounts:profile' %}" class="pf-btn-back">Буцах</a></div>
+			<div><button type="submit" class="auth-btn mt-0">Хадгалах <i class="fa fa-arrow-right ml-2"></i></button></div>
+		</div>
+	</form>
+</div>
+{% endblock %}

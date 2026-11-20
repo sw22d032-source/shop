@@ -1,0 +1,517 @@
+[
+{
+  "model": "store_app.category",
+  "pk": 2,
+  "fields": {
+    "parent": null,
+    "category_name": "Компьютер",
+    "slug": "kompyuter",
+    "description": "",
+    "cat_image": "",
+    "icon": "",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 3,
+  "fields": {
+    "parent": null,
+    "category_name": "Гэр ахуйн бараа",
+    "slug": "ger-ahujn-baraa",
+    "description": "",
+    "cat_image": "",
+    "icon": "",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 4,
+  "fields": {
+    "parent": null,
+    "category_name": "Бичиг хэрэг",
+    "slug": "bichig-hereg",
+    "description": "",
+    "cat_image": "",
+    "icon": "",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 5,
+  "fields": {
+    "parent": null,
+    "category_name": "Спорт хэрэгсэл",
+    "slug": "sport-heregsel",
+    "description": "",
+    "cat_image": "",
+    "icon": "",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 7,
+  "fields": {
+    "parent": null,
+    "category_name": "Технологи",
+    "slug": "tehnologi",
+    "description": "",
+    "cat_image": "photos/categories/images.jpg",
+    "icon": "",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 1,
+  "fields": {
+    "parent": 7,
+    "category_name": "Утас",
+    "slug": "utas",
+    "description": "",
+    "cat_image": "",
+    "icon": "",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 9,
+  "fields": {
+    "parent": 7,
+    "category_name": "Комм",
+    "slug": "kom",
+    "description": "",
+    "cat_image": "",
+    "icon": "",
+    "ordering": 1
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 10,
+  "fields": {
+    "parent": 9,
+    "category_name": "Зөөврийн",
+    "slug": "zvrijn",
+    "description": "",
+    "cat_image": "",
+    "icon": "",
+    "ordering": 1
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 11,
+  "fields": {
+    "parent": 9,
+    "category_name": "Суурин",
+    "slug": "suurin",
+    "description": "",
+    "cat_image": "",
+    "icon": "",
+    "ordering": 2
+  }
+},
+{
+  "model": "store_app.category",
+  "pk": 8,
+  "fields": {
+    "parent": 1,
+    "category_name": "Baraa",
+    "slug": "baraa",
+    "description": "Baraaa",
+    "cat_image": "",
+    "icon": "aaaa",
+    "ordering": 3
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 1,
+  "fields": {
+    "product_name": "iPhone 17",
+    "slug": "iphone-15",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 2,
+    "old_price": null,
+    "images": "photos/products/nav_iphone_17pro__d60uog2c064i_large_2x.png",
+    "stock": 0,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 1,
+    "views": 1,
+    "created_date": "2025-09-19T04:58:10.591Z",
+    "modified_date": "2025-10-07T08:22:00.236Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 2,
+  "fields": {
+    "product_name": "Samsung Galaxy S24",
+    "slug": "samsung-galaxy-s24",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 3,
+    "old_price": null,
+    "images": "photos/products/sm-s928_galaxys24ultra_front_titaniumviolet_231108.jpg",
+    "stock": 7,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 1,
+    "views": 0,
+    "created_date": "2025-09-19T04:58:47.376Z",
+    "modified_date": "2025-10-07T08:29:46.344Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 3,
+  "fields": {
+    "product_name": "MacBook Air M2",
+    "slug": "macbook-air-m2",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 2000,
+    "old_price": null,
+    "images": "photos/products/Latte.png",
+    "stock": 30,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 2,
+    "views": 1,
+    "created_date": "2025-09-19T04:59:19.457Z",
+    "modified_date": "2025-09-19T04:59:19.457Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 4,
+  "fields": {
+    "product_name": "Dell XPS 13",
+    "slug": "dell-xps-13",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 5000,
+    "old_price": null,
+    "images": "photos/products/Cappuccino_Qv3Ye06.jpg",
+    "stock": 3200,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 2,
+    "views": 0,
+    "created_date": "2025-09-19T04:59:47.586Z",
+    "modified_date": "2025-09-19T04:59:47.586Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 5,
+  "fields": {
+    "product_name": "Xiaomi Air Purifier",
+    "slug": "xiaomi-air-purifier",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 500,
+    "old_price": null,
+    "images": "photos/products/EcoLaundryLogo.png",
+    "stock": 90,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 3,
+    "views": 0,
+    "created_date": "2025-09-19T05:00:17.618Z",
+    "modified_date": "2025-09-19T05:00:17.618Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 6,
+  "fields": {
+    "product_name": "Philips LED Lamp",
+    "slug": "philips-led-lamp",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 4300,
+    "old_price": null,
+    "images": "photos/products/Latte_odRk5QG.png",
+    "stock": 32,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 3,
+    "views": 0,
+    "created_date": "2025-09-19T05:00:47.871Z",
+    "modified_date": "2025-09-19T05:00:47.871Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 7,
+  "fields": {
+    "product_name": "Moleskine дэвтэр",
+    "slug": "moleskine-devter",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 2300,
+    "old_price": null,
+    "images": "photos/products/Screenshot_2.png",
+    "stock": 2,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 4,
+    "views": 0,
+    "created_date": "2025-09-19T05:01:16.895Z",
+    "modified_date": "2025-09-19T05:01:16.895Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 8,
+  "fields": {
+    "product_name": "Pilot G2 үзэг",
+    "slug": "pilot-g2-zeg",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 2889,
+    "old_price": null,
+    "images": "photos/products/Cappuccino_ASAUgxE.jpg",
+    "stock": 322,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 4,
+    "views": 0,
+    "created_date": "2025-09-19T05:01:50.391Z",
+    "modified_date": "2025-09-19T05:01:50.391Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 9,
+  "fields": {
+    "product_name": "Nike Running Shoes",
+    "slug": "nike-running-shoes",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 6500,
+    "old_price": null,
+    "images": "photos/products/Espresso_BEiSU2h.png",
+    "stock": 210,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 5,
+    "views": 1,
+    "created_date": "2025-09-19T05:02:16.216Z",
+    "modified_date": "2025-09-19T05:03:04.626Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 10,
+  "fields": {
+    "product_name": "Adidas Dumbbell Set",
+    "slug": "adidas-dumbbell-set",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 2333,
+    "old_price": null,
+    "images": "products/Caramel_Macchiato_ACyPHK0.png",
+    "stock": 211,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 5,
+    "views": 0,
+    "created_date": "2025-09-19T05:02:40.285Z",
+    "modified_date": "2025-09-22T02:25:00.325Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 11,
+  "fields": {
+    "product_name": "sass",
+    "slug": "tesst",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 3,
+    "old_price": null,
+    "images": "photos/products/ThunderZ_-_Tsumuuhei_Animated_Video.mp42025-06-05_15-01-36.026.jpg",
+    "stock": 1,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 1,
+    "views": 2,
+    "created_date": "2025-09-22T02:40:26.369Z",
+    "modified_date": "2025-09-22T02:40:26.369Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 12,
+  "fields": {
+    "product_name": "Сүлжээ салаалагч",
+    "slug": "slzhee-salaalagch",
+    "brand": "",
+    "sku": "",
+    "description": "",
+    "additional_info": "",
+    "price": 49900,
+    "old_price": null,
+    "images": "photos/products/e0_aa_185403055c8d367cdd777acefeda.jpg",
+    "stock": 10,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 7,
+    "views": 0,
+    "created_date": "2026-11-19T07:25:17.981Z",
+    "modified_date": "2026-11-19T07:25:17.981Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 13,
+  "fields": {
+    "product_name": "Сүлжээний төхөөрөмж",
+    "slug": "slzheenij-thrmzh",
+    "brand": "",
+    "sku": "",
+    "description": "Dual-Band Long Range Outdoor Wireless AP with PoE and IP67 AERIAL HD6",
+    "additional_info": "",
+    "price": 600000,
+    "old_price": null,
+    "images": "photos/products/9.jpg",
+    "stock": 8,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 7,
+    "views": 1,
+    "created_date": "2026-11-19T07:27:19.614Z",
+    "modified_date": "2026-11-19T07:27:36.882Z"
+  }
+},
+{
+  "model": "store_app.product",
+  "pk": 14,
+  "fields": {
+    "product_name": "MacBook Air M5 13-inch (16/512GB) Midnight",
+    "slug": "macbook-air-m5-13-inch-16512gb-midnight",
+    "brand": "Apple",
+    "sku": "",
+    "description": "Tailbar aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "additional_info": "Display size: 13.6 inch\r\nChipset: Apple M5\r\nCPU: 10-core (4 performace cores, 6 efficiency cores)\r\nGPU: Apple GPU (10- core graphics\r\nMain camera: 1080p Facetime HD camera\r\nSelfie camera: 1080p Facetime HD camera",
+    "price": 5799000,
+    "old_price": null,
+    "images": "photos/products/MDHE4ZP-A_1.jpg",
+    "stock": 7,
+    "delivery_info": "24-48 цагт хүргэнэ",
+    "is_available": true,
+    "category": 10,
+    "views": 2,
+    "created_date": "2026-11-20T01:27:23.024Z",
+    "modified_date": "2026-11-20T01:27:23.024Z"
+  }
+},
+{
+  "model": "store_app.productimage",
+  "pk": 1,
+  "fields": {
+    "product": 14,
+    "image": "photos/products/gallery/7__CTA1x.png",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.productimage",
+  "pk": 2,
+  "fields": {
+    "product": 14,
+    "image": "photos/products/gallery/logoweb2.png",
+    "ordering": 1
+  }
+},
+{
+  "model": "store_app.productimage",
+  "pk": 3,
+  "fields": {
+    "product": 14,
+    "image": "photos/products/gallery/logoweb.png",
+    "ordering": 2
+  }
+},
+{
+  "model": "store_app.productspec",
+  "pk": 1,
+  "fields": {
+    "product": 14,
+    "name": "Төрөл",
+    "value": "Зөөврийн компьютер",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.productspec",
+  "pk": 2,
+  "fields": {
+    "product": 14,
+    "name": "Үйлдлийн систем",
+    "value": "MacOS",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.productspec",
+  "pk": 3,
+  "fields": {
+    "product": 14,
+    "name": "Багтаамж",
+    "value": "512GB",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.productspec",
+  "pk": 4,
+  "fields": {
+    "product": 14,
+    "name": "Санах ой",
+    "value": "16GB",
+    "ordering": 0
+  }
+},
+{
+  "model": "store_app.productspec",
+  "pk": 5,
+  "fields": {
+    "product": 14,
+    "name": "Батерей",
+    "value": "4500 mAh",
+    "ordering": 0
+  }
+}
+]

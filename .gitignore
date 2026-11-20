@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+env/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+
+# Нууц тохиргоо — хэзээ ч commit хийхгүй
+.env
+.env.*
+client_secret*.json
+
+# Vercel
+.vercel
+
+# Бусад
+*.rar
+.DS_Store

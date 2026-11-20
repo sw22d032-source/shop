@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}QPay төлбөр — #{{ order.order_number }}{% endblock %}
+{% block content %}
+<section class="section-content padding-y">
+	<div class="container">
+		<div class="qp-wrap">
+			<div class="qp-card">
+				<div class="qp-head">
+					<span class="qp-logo">Q<b>Pay</b></span>
+					<div>
+						<h4>Төлбөр төлөх</h4>
+						<small>Захиалга #{{ order.order_number }}</small>
+					</div>
+				</div>
+
+				<div class="qp-amount">
+					<small>Төлөх дүн</small>
+					<b>{{ order.grand_total|intcomma }}₮</b>
+				</div>
+
+				{% if order.qpay_qr_image or order.qpay_qr_text %}
+				<div class="qp-qr">
+					{% if order.qpay_qr_image %}
+					<img src="data:image/png;base64,{{ order.qpay_qr_image }}" alt="QPay QR код">
+					{% endif %}
+				</div>
+				<p class="qp-hint">Банкны аппликэйшнээрээ <b>QR кодыг уншуулж</b> төлнө үү.</p>
+
+				<div class="qp-status" id="qpStatus">
+					<span class="qp-spinner"></span>
+					<span id="qpStatusText">Төлбөр хүлээж байна...</span>
+				</div>
+
+				{% if order.qpay_urls %}
+				<div class="qp-banks-title">Утсан дээрээ банкны апп-аар төлөх</div>
+				<div class="qp-banks">
+					{% for b in order.qpay_urls %}
+					<a href="{{ b.link }}" class="qp-bank" title="{{ b.description }}">
+						{% if b.logo %}<img src="{{ b.logo }}" alt="" loading="lazy">{% endif %}
+						<span>{{ b.description|default:b.name }}</span>
+					</a>
+					{% endfor %}
+				</div>
+				{% endif %}
+
+				<button type="button" class="auth-btn" id="qpCheckBtn"><i class="fa fa-sync-alt mr-2"></i>Төлбөр шалгах</button>
+
+				{% if dev_simulate %}
+				<form method="post" action="{% url 'qpay_simulate' order.order_number %}" class="mt-2">
+					{% csrf_token %}
+					<button type="submit" class="qp-dev-btn"><i class="fa fa-flask mr-1"></i> Тест: төлбөр төлсөн болгох (зөвхөн sandbox)</button>
+				</form>
+				{% endif %}
+
+				{% else %}
+				<div class="qp-error">
+					<i class="fa fa-exclamation-triangle"></i>
+					QPay нэхэмжлэх үүсээгүй байна. Интернэт холболтоо шалгаад дахин оролдоно уу.
+				</div>
+				<form method="post">
+					{% csrf_token %}<input type="hidden" name="action" value="retry">
+					<button type="submit" class="auth-btn"><i class="fa fa-redo mr-2"></i>Дахин оролдох</button>
+				</form>
+				{% endif %}
+
+				<form method="post" action="{% url 'qpay_cancel' order.order_number %}" class="text-center mt-3"
+					onsubmit="return confirm('Захиалгыг цуцлах уу? Бараанууд дэлгүүрт буцна.');">
+					{% csrf_token %}
+					<button type="submit" class="qp-cancel">Захиалга цуцлах</button>
+				</form>
+			</div>
+
+			<aside class="qp-summary">
+				<h6>Захиалгын мэдээлэл</h6>
+				{% for item in order.items.all %}
+				<div class="qp-line"><span>{{ item.product_name }} × {{ item.quantity }}</span><b>{{ item.sub_total|intcomma }}₮</b></div>
+				{% endfor %}
+				<hr>
+				<div class="qp-line"><span>Барааны дүн</span><span>{{ order.order_total|intcomma }}₮</span></div>
+				<div class="qp-line"><span>НӨАТ (10%)</span><span>{{ order.tax|intcomma }}₮</span></div>
+				<div class="qp-line total"><span>Нийт</span><b>{{ order.grand_total|intcomma }}₮</b></div>
+				<hr>
+				<div class="small text-muted">
+					<div><i class="fa fa-user mr-2"></i>{{ order.full_name }} · {{ order.phone }}</div>
+					<div class="mt-1"><i class="fa fa-map-marker-alt mr-2"></i>{{ order.city }}, {{ order.address }}</div>
+				</div>
+			</aside>
+		</div>
+	</div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{% if order.qpay_invoice_id %}
+<script>
+$(function () {
+    var url = "{% url 'qpay_check' order.order_number %}", busy = false, tries = 0, timer;
+    function check(manual) {
+        if (busy) return; busy = true;
+        if (manual) $('#qpStatusText').text('Шалгаж байна...');
+        $.getJSON(url).done(function (r) {
+            if (r.paid) {
+                clearInterval(timer);
+                $('#qpStatus').addClass('ok').html('<i class="fa fa-check-circle"></i> Төлбөр төлөгдлөө! Шилжиж байна...');
+                setTimeout(function () { window.location = r.redirect; }, 800);
+            } else if (r.error) {
+                $('#qpStatusText').text(r.error);
+            } else {
+                $('#qpStatusText').text(manual ? 'Төлбөр хараахан ороогүй байна.' : 'Төлбөр хүлээж байна...');
+            }
+        }).always(function () { busy = false; });
+    }
+    // Эхний 10 минут 3 секунд тутам, дараа нь 10 секунд тутам шалгана
+    timer = setInterval(function () { tries++; if (tries < 200 || tries % 3 === 0) check(false); }, 3000);
+    $('#qpCheckBtn').on('click', function () { check(true); });
+});
+</script>
+{% endif %}
+{% endblock %}
